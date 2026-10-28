@@ -36,8 +36,8 @@ app.get('/pay/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pay.html'));
 });
 
-// Pretty URL Routing for /dashboard
-app.get('/dashboard', (req, res) => {
+// Pretty URL Routing for /dashboard and /admin
+app.get(['/dashboard', '/admin'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
