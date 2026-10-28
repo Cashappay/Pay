@@ -86,3 +86,4 @@ function notify_payment_completed($page, $payment, $target_wallet, $settings) {
 
     send_telegram_message($settings['telegram_bot_token'], $settings['telegram_chat_id'], $msg);
 }
+

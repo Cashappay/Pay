@@ -439,3 +439,4 @@ function update_settings($updates) {
     save_db($db);
     return $db['system_settings'];
 }
+

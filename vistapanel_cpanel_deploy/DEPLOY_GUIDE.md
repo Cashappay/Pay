@@ -93,3 +93,4 @@ vistapanel_cpanel_deploy/
    - Click `👁️ Visit Profile` on any user row to view their dashboard in a secure admin session.
 5. **Telegram Bot Alerts**:
    - Instant notifications on invoice creation and settlement sent to your Telegram chat.
+

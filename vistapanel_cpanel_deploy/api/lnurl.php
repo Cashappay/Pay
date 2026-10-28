@@ -103,3 +103,4 @@ function check_invoice_settlement($verify_url) {
     $data = http_get_json($verify_url, 4);
     return !empty($data['settled']) && $data['settled'] === true;
 }
+

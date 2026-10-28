@@ -3,7 +3,9 @@
 # Compatible with: VistaPanel (InfinityFree, ByetHost), cPanel, Apache 2.4+
 # ==============================================================================
 
-Options -Indexes
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
 RewriteEngine On
 
 # ------------------------------------------------------------------------------
@@ -53,3 +55,4 @@ RewriteRule ^(.*)$ $1.html [L]
 # 5. DEFAULT DIRECTORY INDEX
 # ------------------------------------------------------------------------------
 DirectoryIndex index.html index.php
+

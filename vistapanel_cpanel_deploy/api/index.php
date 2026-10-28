@@ -1,7 +1,11 @@
 <?php
 /**
- * Master REST API Router for VistaPanel / cPanel
+ * Master REST API Router for VistaPanel / ByetHost / cPanel
  */
+
+// Suppress PHP notices/warnings from corrupting JSON output on shared hosting
+error_reporting(0);
+ini_set('display_errors', '0');
 
 // Enable CORS
 header("Access-Control-Allow-Origin: *");
@@ -652,3 +656,4 @@ try {
 } catch (Exception $e) {
     json_out(['success' => false, 'error' => $e->getMessage()], 500);
 }
+
