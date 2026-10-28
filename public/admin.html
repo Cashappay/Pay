@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner & Management Portal • Cash App Gateway</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #080808;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glass-card {
+      background: rgba(20, 20, 20, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-btn.active {
+      background-color: #171717;
+      color: #00D632;
+      border-color: rgba(0, 214, 50, 0.3);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#00D632] selection:text-black">
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#0F0F0F] border-b md:border-b-0 md:border-r border-neutral-800 shrink-0 flex flex-col justify-between z-30">
+    <div>
+      <!-- Header -->
+      <div class="p-5 flex items-center justify-between border-b border-neutral-800">
+        <a href="/admin" class="flex items-center space-x-3">
+          <img src="/assets/cashapp-logo.svg" alt="Cash App" class="w-9 h-9 rounded-xl shadow-lg shadow-emerald-500/20" />
+          <div>
+            <div class="text-sm font-black text-white flex items-center space-x-1.5">
+              <span>Management</span>
+              <span class="text-[10px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded-full font-mono border border-purple-500/30">Owner</span>
+            </div>
+            <p class="text-[10px] text-neutral-400 font-medium">Platform Super Admin</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-3 space-y-1">
+        <button onclick="switchTab('overview')" id="nav-overview"
+          class="nav-btn active w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span>Platform Overview</span>
+        </button>
+
+        <button onclick="switchTab('users')" id="nav-users"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span>User Monitoring</span>
+        </button>
+
+        <button onclick="switchTab('visitors')" id="nav-visitors"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Visitors & Traffic</span>
+        </button>
+
+        <button onclick="switchTab('transactions')" id="nav-transactions"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-[#00D632]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>Global Payments</span>
+        </button>
+
+        <button onclick="switchTab('settings')" id="nav-settings"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>Owner Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User Profile & Sign Out -->
+    <div class="p-4 border-t border-neutral-800 bg-[#0A0A0A]">
+      <div class="flex items-center justify-between">
+        <div class="min-w-0">
+          <p id="staffName" class="text-xs font-bold text-white truncate">Management</p>
+          <p class="text-[10px] text-[#00D632] font-mono font-bold">Owner Access</p>
+        </div>
+        <button onclick="handleLogout()" title="Log Out"
+          class="text-neutral-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-neutral-800 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div>
+        <h1 id="pageHeading" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Owner & Management Console</h1>
+        <p id="pageSubheading" class="text-xs sm:text-sm text-neutral-400 mt-1">Platform monitoring, user account freeze/unfreeze, and traffic analytics.</p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="loadAdminData()" class="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-bold text-neutral-300 transition flex items-center space-x-1.5">
+          <span>🔄 Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <div id="tab-overview" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Metric 1: Total Volume -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Gross Platform Volume</span>
+            <span class="text-emerald-400 text-base">💰</span>
+          </div>
+          <div id="metricTotalVolume" class="text-2xl sm:text-3xl font-black text-white">$0.00</div>
+          <p id="metricTotalSats" class="text-xs font-mono text-emerald-400 mt-1">0 Sats processed</p>
+        </div>
+
+        <!-- Metric 2: Owner Cut (Every 3rd Payment) -->
+        <div class="glass-card p-5 rounded-2xl border border-purple-500/30">
+          <div class="flex justify-between items-center text-xs text-purple-400 font-semibold mb-2">
+            <span>Owner Satoshi Revenue (3rd Cut)</span>
+            <span class="text-purple-400 text-base">👑</span>
+          </div>
+          <div id="metricOwnerVolume" class="text-2xl sm:text-3xl font-black text-purple-400">$0.00</div>
+          <p id="metricOwnerSats" class="text-xs font-mono text-purple-300 mt-1">0 Sats received</p>
+        </div>
+
+        <!-- Metric 3: Total Users -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Total Registered Users</span>
+            <span class="text-sky-400 text-base">👥</span>
+          </div>
+          <div id="metricTotalUsers" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p id="metricUserBreakdown" class="text-xs text-neutral-400 mt-1">0 Active • 0 Frozen • 0 Blocked</p>
+        </div>
+
+        <!-- Metric 4: Traffic / Clicks -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Total Tracked Visitors</span>
+            <span class="text-amber-400 text-base">🌍</span>
+          </div>
+          <div id="metricTotalVisitors" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p class="text-xs text-neutral-400 mt-1">Live country tracking</p>
+        </div>
+      </div>
+
+      <!-- Quick Control Banners -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-1">Owner Payout Wallet</h3>
+            <p id="quickOwnerWallet" class="text-xs font-mono text-purple-400 truncate max-w-sm">Loading...</p>
+            <p class="text-[11px] text-neutral-500 mt-1">Every 3rd user payment automatically settles to this wallet address.</p>
+          </div>
+          <button onclick="switchTab('settings')" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition shrink-0 ml-4">
+            Edit Wallet
+          </button>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-1">Telegram Alert Bot</h3>
+            <p id="quickTelegramStatus" class="text-xs text-emerald-400 font-semibold">Active & Listening</p>
+            <p class="text-[11px] text-neutral-500 mt-1">Receives instant alerts on invoice creation & settlement.</p>
+          </div>
+          <button onclick="testTelegramAlert()" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs rounded-xl transition shrink-0 ml-4">
+            Test Ping
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: USER MONITORING ==================== -->
+    <div id="tab-users" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">User Monitoring & Account Controls</h2>
+            <p class="text-xs text-neutral-400">Freeze accounts to pause payments, unfreeze, block, or delete.</p>
+          </div>
+
+          <input type="text" id="userSearchInput" oninput="filterUsersTable()" placeholder="Search by name, email, or wallet..."
+            class="bg-neutral-900 border border-neutral-700 text-xs rounded-xl px-4 py-2 text-white w-full sm:w-64 focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">User</th>
+                <th class="pb-3">Role</th>
+                <th class="pb-3">Satoshi Wallet Address</th>
+                <th class="pb-3">Payments Count</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3 text-right">Moderation Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-neutral-800 font-sans">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: VISITORS & TRAFFIC ==================== -->
+    <div id="tab-visitors" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Visitor Traffic & Country Tracker</h2>
+        <p class="text-xs text-neutral-400 mb-6">Live audit of visitors, clicks, IP addresses, countries, and target pages.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Country</th>
+                <th class="pb-3">IP Address</th>
+                <th class="pb-3">Page Visited</th>
+                <th class="pb-3">Browser / Device</th>
+                <th class="pb-3 text-right">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="visitorsTableBody" class="divide-y divide-neutral-800 font-mono">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: GLOBAL PAYMENTS ==================== -->
+    <div id="tab-transactions" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Global Payment Ledger</h2>
+        <p class="text-xs text-neutral-400 mb-6">Inspect all transactions and review the 2-to-1 fee routing execution.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Payment ID</th>
+                <th class="pb-3">Merchant</th>
+                <th class="pb-3">Amount</th>
+                <th class="pb-3">Satoshis</th>
+                <th class="pb-3">Routed To</th>
+                <th class="pb-3">Target Wallet</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3 text-right">Date</th>
+              </tr>
+            </thead>
+            <tbody id="globalPaymentsBody" class="divide-y divide-neutral-800 font-mono">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: SETTINGS ==================== -->
+    <div id="tab-settings" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl max-w-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Owner Platform Settings</h2>
+        <p class="text-xs text-neutral-400 mb-6">Configure the master Satoshi wallet address and Telegram alert bot.</p>
+
+        <form onsubmit="handleSaveSettings(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Owner Master Satoshi Wallet Address (Lightning Address) *
+            </label>
+            <input type="text" id="ownerLightningInput" required placeholder="owner@walletofsatoshi.com"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-purple-400 font-mono focus:outline-none focus:border-purple-500" />
+            <p class="text-[11px] text-neutral-500 mt-1">
+              Every 3rd user payment (3, 6, 9...) will be routed directly to this Satoshi wallet address.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Payment Commission Cycle Interval
+            </label>
+            <input type="number" id="feeIntervalInput" min="1" max="100" value="3"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            <p class="text-[11px] text-neutral-500 mt-1">
+              Set to 3: 2 payments go to user, the 3rd payment goes to owner.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-neutral-800 space-y-3">
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Platform Telegram Notifications</h3>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Telegram Bot Token</label>
+              <input type="text" id="telegramTokenInput" placeholder="8778648114:AAEgz..."
+                class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Telegram Chat ID</label>
+              <input type="text" id="telegramChatIdInput" placeholder="-1004437748729"
+                class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            </div>
+          </div>
+
+          <button type="submit"
+            class="bg-purple-600 hover:bg-purple-500 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-purple-500/20">
+            Save Platform Settings
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast"
+    class="opacity-0 pointer-events-none fixed top-5 right-5 bg-neutral-900 border border-neutral-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-2xl z-50 transition-all">
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <script>
+    let authToken = localStorage.getItem("cashapp_auth_token");
+    let allUsers = [];
+    let allPayments = [];
+    let allVisitors = [];
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toastMsg").innerText = msg;
+      t.classList.remove("opacity-0", "pointer-events-none");
+      t.classList.add("opacity-100");
+      setTimeout(() => {
+        t.classList.remove("opacity-100");
+        t.classList.add("opacity-0", "pointer-events-none");
+      }, 2500);
+    }
+
+    async function initAdmin() {
+      if (!authToken) {
+        window.location.href = "/?login=1";
+        return;
+      }
+
+      try {
+        const meRes = await fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const meData = await meRes.json();
+        if (!meData.success || !['owner', 'admin', 'support'].includes(meData.user.role)) {
+          alert("Access denied. Owner and Management team only.");
+          window.location.href = "/profile";
+          return;
+        }
+
+        document.getElementById("staffName").innerText = meData.user.name;
+        await loadAdminData();
+      } catch (e) {
+        window.location.href = "/?login=1";
+      }
+    }
+
+    async function loadAdminData() {
+      try {
+        const [overviewRes, usersRes, txRes, visRes, setRes] = await Promise.all([
+          fetch("/api/admin/overview", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/users", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/transactions", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/visitors", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/settings", { headers: { "Authorization": `Bearer ${authToken}` } })
+        ]);
+
+        const overview = await overviewRes.json();
+        const users = await usersRes.json();
+        const tx = await txRes.json();
+        const visitors = await visRes.json();
+        const settings = await setRes.json();
+
+        if (overview.success) renderOverview(overview.stats);
+        if (users.success) {
+          allUsers = users.users;
+          renderUsersTable(allUsers);
+        }
+        if (tx.success) {
+          allPayments = tx.payments;
+          renderGlobalPayments(allPayments);
+        }
+        if (visitors.success) {
+          allVisitors = visitors.visitors;
+          renderVisitorsTable(allVisitors);
+        }
+        if (settings.success) renderSettings(settings.settings);
+      } catch (err) {
+        console.error("Admin load error:", err);
+      }
+    }
+
+    function renderOverview(s) {
+      document.getElementById("metricTotalVolume").innerText = `$${parseFloat(s.total_volume_usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("metricTotalSats").innerText = `${s.total_volume_sats.toLocaleString()} Sats processed`;
+      document.getElementById("metricOwnerVolume").innerText = `$${parseFloat(s.owner_volume_usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("metricOwnerSats").innerText = `${s.owner_volume_sats.toLocaleString()} Sats (${s.owner_payments_count} cuts)`;
+      document.getElementById("metricTotalUsers").innerText = s.total_users;
+      document.getElementById("metricUserBreakdown").innerText = `${s.active_users} Active • ${s.frozen_users} Frozen • ${s.blocked_users} Blocked`;
+      document.getElementById("metricTotalVisitors").innerText = s.total_visitors;
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById("usersTableBody");
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-neutral-500">No users found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-3">
+            <p class="font-bold text-white text-xs">${u.name}</p>
+            <p class="text-[11px] text-neutral-400 font-mono">${u.email}</p>
+          </td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+              u.role === 'owner' ? 'bg-purple-500/20 text-purple-400' : 'bg-neutral-800 text-neutral-300'
+            }">${u.role}</span>
+          </td>
+          <td class="py-3 font-mono text-[11px] text-neutral-300 max-w-xs truncate" title="${u.lightning_address}">
+            ${u.lightning_address || 'None'}
+          </td>
+          <td class="py-3 font-mono font-bold text-amber-400">${u.payments_count || 0}</td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              u.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+              u.status === 'frozen' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+              'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+            }">
+              ${u.status.toUpperCase()}
+            </span>
+          </td>
+          <td class="py-3 text-right space-x-1.5 font-sans">
+            ${u.role !== 'owner' ? `
+              ${u.status === 'active' ? `
+                <button onclick="changeUserStatus('${u.id}', 'frozen')" class="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-[11px] font-bold">
+                  Freeze
+                </button>
+              ` : `
+                <button onclick="changeUserStatus('${u.id}', 'active')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                  Unfreeze
+                </button>
+              `}
+              ${u.status !== 'blocked' ? `
+                <button onclick="changeUserStatus('${u.id}', 'blocked')" class="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[11px] font-bold">
+                  Block
+                </button>
+              ` : `
+                <button onclick="changeUserStatus('${u.id}', 'active')" class="px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-[11px] font-bold">
+                  Unblock
+                </button>
+              `}
+              <button onclick="deleteUser('${u.id}')" class="px-2 py-1 rounded-lg hover:text-rose-400 text-neutral-500 text-[11px]">
+                🗑️
+              </button>
+            ` : '<span class="text-neutral-500 text-[11px]">Owner</span>'}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function filterUsersTable() {
+      const q = document.getElementById("userSearchInput").value.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        u.name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        (u.lightning_address && u.lightning_address.toLowerCase().includes(q))
+      );
+      renderUsersTable(filtered);
+    }
+
+    async function changeUserStatus(userId, status) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}/status`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ status })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`User status updated to ${status}`);
+          await loadAdminData();
+        }
+      } catch (e) {
+        showToast("Error updating user");
+      }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm("Are you sure you want to permanently delete this user account?")) return;
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("User deleted");
+          await loadAdminData();
+        }
+      } catch (e) { }
+    }
+
+    function renderVisitorsTable(visitors) {
+      const tbody = document.getElementById("visitorsTableBody");
+      if (!visitors || visitors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-neutral-500">No visitors recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = visitors.map(v => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-2.5 font-bold text-white font-sans flex items-center space-x-1.5">
+            <span>🌐</span> <span>${v.country}</span>
+          </td>
+          <td class="py-2.5 text-neutral-300">${v.ip}</td>
+          <td class="py-2.5 text-[#00D632]">/pay/${v.slug || 'root'}</td>
+          <td class="py-2.5 text-neutral-400 truncate max-w-xs text-[11px]" title="${v.user_agent}">${v.user_agent}</td>
+          <td class="py-2.5 text-right text-neutral-400 text-[11px]">${new Date(v.timestamp).toLocaleTimeString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderGlobalPayments(payments) {
+      const tbody = document.getElementById("globalPaymentsBody");
+      if (!payments || payments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-neutral-500 font-sans">No payments processed yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = payments.map(p => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-2.5 font-bold text-neutral-300">${p.id}</td>
+          <td class="py-2.5 font-sans text-white">${p.merchant_name}</td>
+          <td class="py-2.5 font-bold text-white">$${parseFloat(p.amount_usd).toFixed(2)}</td>
+          <td class="py-2.5 text-amber-400">${(p.amount_sats || 0).toLocaleString()}</td>
+          <td class="py-2.5 font-sans">
+            ${p.routing_target === 'OWNER' ? `
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                👑 OWNER (3rd Cut)
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-800 text-neutral-300">
+                👤 Merchant
+              </span>
+            `}
+          </td>
+          <td class="py-2.5 text-[10px] text-neutral-400 truncate max-w-[140px]" title="${p.destination_wallet}">
+            ${p.destination_wallet}
+          </td>
+          <td class="py-2.5 font-sans">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              p.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+            }">${p.status}</span>
+          </td>
+          <td class="py-2.5 text-right text-neutral-400 text-[11px]">${new Date(p.created_at).toLocaleTimeString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderSettings(s) {
+      document.getElementById("ownerLightningInput").value = s.owner_lightning_address || "";
+      document.getElementById("feeIntervalInput").value = s.fee_cycle_interval || 3;
+      document.getElementById("telegramTokenInput").value = s.telegram_bot_token || "";
+      document.getElementById("telegramChatIdInput").value = s.telegram_chat_id || "";
+
+      document.getElementById("quickOwnerWallet").innerText = s.owner_lightning_address || "None configured";
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const body = {
+        owner_lightning_address: document.getElementById("ownerLightningInput").value,
+        fee_cycle_interval: document.getElementById("feeIntervalInput").value,
+        telegram_bot_token: document.getElementById("telegramTokenInput").value,
+        telegram_chat_id: document.getElementById("telegramChatIdInput").value
+      };
+
+      try {
+        const res = await fetch("/api/admin/settings", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Settings saved successfully!");
+          await loadAdminData();
+        }
+      } catch (e) {
+        showToast("Failed to save settings");
+      }
+    }
+
+    async function testTelegramAlert() {
+      try {
+        const res = await fetch("/api/admin/test-telegram", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Test Telegram alert sent!");
+        } else {
+          showToast(json.error || "Telegram alert failed");
+        }
+      } catch (e) {
+        showToast("Error sending Telegram test");
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      const activeNav = document.getElementById(`nav-${tabId}`);
+
+      if (activeTab) activeTab.classList.remove("hidden");
+      if (activeNav) activeNav.classList.add("active");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("cashapp_auth_token");
+      window.location.href = "/";
+    }
+
+    initAdmin();
+  </script>
+</body>
+
+</html>

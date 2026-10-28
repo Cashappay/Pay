@@ -3,13 +3,16 @@ const router = express.Router();
 const { db } = require('../data/db');
 const { requireAuth } = require('./auth');
 
-// GET /api/pages - List all payment pages for the current user
+// GET /api/pages - List all payment pages for current user
 router.get('/', requireAuth, (req, res) => {
   try {
-    const pages = db.findPagesByUserId(req.user.id);
-    const payments = db.findPaymentsByUserId(req.user.id);
+    const isStaff = ['owner', 'admin'].includes(req.user.role);
+    const pages = isStaff && req.query.all === 'true'
+      ? db.getAllPages()
+      : db.findPagesByUserId(req.user.id);
 
-    // Compute stats for each page
+    const payments = db.getAllPayments();
+
     const pagesWithStats = pages.map(page => {
       const pagePayments = payments.filter(p => p.page_id === page.id);
       const completed = pagePayments.filter(p => p.status === 'COMPLETED');
@@ -33,13 +36,18 @@ router.get('/', requireAuth, (req, res) => {
   }
 });
 
-// POST /api/pages - Create a new payment page
+// POST /api/pages - Create new payment page with Satoshi wallet address
 router.post('/', requireAuth, (req, res) => {
   try {
-    const { title, slug, receiver_name, description, type, fixed_amount, success_url, webhook_url, is_verified } = req.body;
+    const { title, slug, receiver_name, description, type, fixed_amount, success_url, is_verified, custom_wallet } = req.body;
 
     if (!title) {
       return res.status(400).json({ success: false, error: 'Page Title is required.' });
+    }
+
+    const wallet = custom_wallet || req.user.lightning_address;
+    if (!wallet) {
+      return res.status(400).json({ success: false, error: 'A Satoshi (Lightning) wallet address is required.' });
     }
 
     const page = db.createPage({
@@ -51,7 +59,7 @@ router.post('/', requireAuth, (req, res) => {
       type: type || 'keypad',
       fixed_amount: parseFloat(fixed_amount) || 0,
       success_url,
-      webhook_url,
+      custom_wallet: wallet,
       is_verified: is_verified !== false
     });
 
@@ -61,36 +69,11 @@ router.post('/', requireAuth, (req, res) => {
   }
 });
 
-// GET /api/pages/:id - Get a specific payment page
-router.get('/:id', requireAuth, (req, res) => {
-  try {
-    const page = db.findPageById(req.params.id);
-    if (!page || page.user_id !== req.user.id) {
-      return res.status(404).json({ success: false, error: 'Page not found.' });
-    }
-    res.json({ success: true, page });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Failed to fetch page: ' + err.message });
-  }
-});
-
-// PUT /api/pages/:id - Update payment page
-router.put('/:id', requireAuth, (req, res) => {
-  try {
-    const updated = db.updatePage(req.params.id, req.user.id, req.body);
-    if (!updated) {
-      return res.status(404).json({ success: false, error: 'Page not found or unauthorized.' });
-    }
-    res.json({ success: true, page: updated, message: 'Page updated successfully.' });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Failed to update page: ' + err.message });
-  }
-});
-
 // DELETE /api/pages/:id - Delete payment page
 router.delete('/:id', requireAuth, (req, res) => {
   try {
-    const deleted = db.deletePage(req.params.id, req.user.id);
+    const isStaff = ['owner', 'admin'].includes(req.user.role);
+    const deleted = db.deletePage(req.params.id, req.user.id, isStaff);
     if (!deleted) {
       return res.status(404).json({ success: false, error: 'Page not found or unauthorized.' });
     }
@@ -100,19 +83,4 @@ router.delete('/:id', requireAuth, (req, res) => {
   }
 });
 
-// PATCH /api/pages/:id/toggle - Toggle active status
-router.patch('/:id/toggle', requireAuth, (req, res) => {
-  try {
-    const page = db.findPageById(req.params.id);
-    if (!page || page.user_id !== req.user.id) {
-      return res.status(404).json({ success: false, error: 'Page not found or unauthorized.' });
-    }
-    const updated = db.updatePage(page.id, req.user.id, { is_active: !page.is_active });
-    res.json({ success: true, page: updated });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Failed to toggle page: ' + err.message });
-  }
-});
-
 module.exports = router;
-

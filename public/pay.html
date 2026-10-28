@@ -443,7 +443,7 @@
         const pathSegments = window.location.pathname.split("/").filter(Boolean);
         if (pathSegments.length > 0) {
           const last = pathSegments[pathSegments.length - 1];
-          if (last !== "pay.html" && last !== "index.html" && last !== "paymentpage.html") {
+          if (last !== "pay" && last !== "pay.html" && last !== "index.html" && last !== "paymentpage.html") {
             slug = last;
           }
         }

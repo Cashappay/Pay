@@ -12,3 +12,4 @@ services:
         value: 3000
       - key: AUTH_SECRET
         generateValue: true
+

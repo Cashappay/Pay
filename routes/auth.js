@@ -5,7 +5,6 @@ const { db, verifyPassword } = require('../data/db');
 
 const AUTH_SECRET = process.env.AUTH_SECRET || 'cashapp_lightning_auth_key_super_secret_2026';
 
-// Simple signed token generator
 function generateToken(userId) {
   const payload = Buffer.from(JSON.stringify({ uid: userId, exp: Date.now() + (30 * 24 * 60 * 60 * 1000) })).toString('base64url');
   const signature = crypto.createHmac('sha256', AUTH_SECRET).update(payload).digest('base64url');
@@ -50,24 +49,33 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ success: false, error: 'User account not found.' });
   }
 
+  if (user.status === 'blocked') {
+    return res.status(403).json({ success: false, error: 'Your account has been deactivated. Please contact management.' });
+  }
+
   req.user = user;
   next();
 }
 
-// Sanitize user object for responses
+// Owner / Admin / Support Staff Middleware
+function requireStaff(req, res, next) {
+  requireAuth(req, res, () => {
+    if (['owner', 'admin', 'support'].includes(req.user.role)) {
+      return next();
+    }
+    return res.status(403).json({ success: false, error: 'Access denied. Management and Admin team only.' });
+  });
+}
+
 function sanitizeUser(user) {
   return {
     id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role || 'user',
+    status: user.status || 'active',
     lightning_address: user.lightning_address,
-    telegram_bot_token: user.telegram_bot_token ? `${user.telegram_bot_token.substring(0, 8)}...` : '',
-    has_telegram_bot: Boolean(user.telegram_bot_token),
-    telegram_chat_id: user.telegram_chat_id,
-    webhook_url: user.webhook_url,
-    webhook_secret: user.webhook_secret,
-    api_key_public: user.api_key_public,
-    api_key_secret: user.api_key_secret,
+    payments_count: user.payments_count || 0,
     created_at: user.created_at
   };
 }
@@ -75,10 +83,14 @@ function sanitizeUser(user) {
 // POST /api/auth/register
 router.post('/register', (req, res) => {
   try {
-    const { name, email, password, lightning_address } = req.body;
+    const { name, email, password, lightning_address, agreed_terms } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, error: 'Name, email, and password are required.' });
+    }
+
+    if (!agreed_terms) {
+      return res.status(400).json({ success: false, error: 'You must agree to the Terms and Conditions to register.' });
     }
 
     if (password.length < 6) {
@@ -94,16 +106,18 @@ router.post('/register', (req, res) => {
       name,
       email,
       password,
-      lightning_address: lightning_address || 'fittinggliding280@walletofsatoshi.com'
+      lightning_address: lightning_address || 'fittinggliding280@walletofsatoshi.com',
+      agreed_terms: true,
+      role: 'user'
     });
 
-    // Create a default first payment page for the user
+    // Create initial page for user
     db.createPage({
       user_id: user.id,
       title: `${user.name}'s Cash App Pay`,
       slug: user.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
       receiver_name: user.name,
-      description: 'Accepting Cash App Lightning payments',
+      description: 'Cash App Lightning payment page',
       type: 'keypad',
       fixed_amount: 0,
       is_verified: true
@@ -116,7 +130,6 @@ router.post('/register', (req, res) => {
       user: sanitizeUser(user)
     });
   } catch (err) {
-    console.error('Registration error:', err);
     res.status(500).json({ success: false, error: 'Registration failed: ' + err.message });
   }
 });
@@ -139,14 +152,18 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ success: false, error: 'Invalid email or password.' });
     }
 
+    if (user.status === 'blocked') {
+      return res.status(403).json({ success: false, error: 'Your account has been deactivated by management.' });
+    }
+
     const token = generateToken(user.id);
     res.json({
       success: true,
       token,
-      user: sanitizeUser(user)
+      user: sanitizeUser(user),
+      redirect: ['owner', 'admin', 'support'].includes(user.role) ? '/admin' : '/profile'
     });
   } catch (err) {
-    console.error('Login error:', err);
     res.status(500).json({ success: false, error: 'Login failed: ' + err.message });
   }
 });
@@ -162,16 +179,11 @@ router.get('/me', requireAuth, (req, res) => {
 // PUT /api/auth/profile
 router.put('/profile', requireAuth, (req, res) => {
   try {
-    const { name, lightning_address, telegram_bot_token, telegram_chat_id, webhook_url, password } = req.body;
+    const { name, lightning_address, password } = req.body;
 
     const updates = {};
     if (name) updates.name = name;
     if (lightning_address !== undefined) updates.lightning_address = lightning_address;
-    if (telegram_bot_token !== undefined && !telegram_bot_token.includes('...')) {
-      updates.telegram_bot_token = telegram_bot_token;
-    }
-    if (telegram_chat_id !== undefined) updates.telegram_chat_id = telegram_chat_id;
-    if (webhook_url !== undefined) updates.webhook_url = webhook_url;
     if (password && password.length >= 6) updates.password = password;
 
     const updated = db.updateUser(req.user.id, updates);
@@ -185,23 +197,9 @@ router.put('/profile', requireAuth, (req, res) => {
   }
 });
 
-// POST /api/auth/regenerate-keys
-router.post('/regenerate-keys', requireAuth, (req, res) => {
-  try {
-    const updated = db.regenerateKeys(req.user.id);
-    res.json({
-      success: true,
-      user: sanitizeUser(updated),
-      message: 'API Keys and Webhook Secret regenerated successfully.'
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Failed to regenerate keys: ' + err.message });
-  }
-});
-
 module.exports = {
   router,
   requireAuth,
+  requireStaff,
   sanitizeUser
 };
-

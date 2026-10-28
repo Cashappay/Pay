@@ -2,6 +2,7 @@
 // Keeps Telegram Bot Token and Chat ID completely hidden from frontend source code and DevTools
 
 const https = require('https');
+const { db } = require('../data/db');
 
 function sendTelegramMessage(botToken, chatId, message) {
   return new Promise((resolve) => {
@@ -56,21 +57,27 @@ function sendTelegramMessage(botToken, chatId, message) {
 }
 
 // Notification for newly generated Cash App invoice
-async function notifyInvoiceCreated({ user, page, payment }) {
-  const token = user.telegram_bot_token;
-  const chatId = user.telegram_chat_id;
+async function notifyInvoiceCreated({ page, payment, targetWallet }) {
+  const settings = db.getSettings();
+  const token = settings.telegram_bot_token;
+  const chatId = settings.telegram_chat_id;
   if (!token || !chatId) return;
 
   const shortInvoice = payment.invoice
     ? `${payment.invoice.substring(0, 24)}...${payment.invoice.substring(payment.invoice.length - 12)}`
     : 'N/A';
 
+  const routeLabel = payment.routing_target === 'OWNER'
+    ? '👑 Owner Platform Wallet (Commission)'
+    : '👤 Merchant Wallet';
+
   const msg =
-    `⚡ *New Cash App Lightning Invoice Generated!*\n\n` +
-    `👤 *Receiver:* ${page.receiver_name || user.name}\n` +
-    `🏷️ *Page:* ${page.title} (\`/${page.slug}\`)\n` +
+    `⚡ *New Cash App Lightning Invoice Created!*\n\n` +
+    `👤 *Page:* ${page.title} (\`/${page.slug}\`)\n` +
     `💰 *Amount:* $${Number(payment.amount_usd).toFixed(2)} USD (~${Number(payment.amount_sats).toLocaleString()} Sats)\n` +
-    `📥 *Lightning Wallet:* \`${user.lightning_address}\`\n` +
+    `🎯 *Routing:* ${routeLabel}\n` +
+    `📥 *Target Wallet:* \`${targetWallet || payment.destination_wallet}\`\n` +
+    `🌍 *Country:* ${payment.visitor_country || 'Unknown'}\n` +
     `🧾 *Invoice:* \`${shortInvoice}\`\n` +
     `🕒 *Time:* ${new Date().toUTCString()}`;
 
@@ -78,19 +85,22 @@ async function notifyInvoiceCreated({ user, page, payment }) {
 }
 
 // Notification for confirmed payment settlement
-async function notifyPaymentCompleted({ user, page, payment }) {
-  const token = user.telegram_bot_token;
-  const chatId = user.telegram_chat_id;
+async function notifyPaymentCompleted({ page, payment }) {
+  const settings = db.getSettings();
+  const token = settings.telegram_bot_token;
+  const chatId = settings.telegram_chat_id;
   if (!token || !chatId) return;
 
+  const routeLabel = payment.routing_target === 'OWNER'
+    ? '👑 Owner Wallet (Commission)'
+    : '👤 Merchant Wallet';
+
   const msg =
-    `🎉 *Cash App Lightning Payment Received!*\n\n` +
+    `🎉 *Cash App Lightning Payment Settled!*\n\n` +
     `✅ *Status:* PAID & CONFIRMED\n` +
-    `👤 *Receiver:* ${page.receiver_name || user.name}\n` +
-    `💵 *Received:* $${Number(payment.amount_usd).toFixed(2)} USD (${Number(payment.amount_sats).toLocaleString()} Sats)\n` +
+    `💵 *Amount:* $${Number(payment.amount_usd).toFixed(2)} USD (${Number(payment.amount_sats).toLocaleString()} Sats)\n` +
+    `🎯 *Delivered To:* ${routeLabel} (\`${payment.destination_wallet}\`)\n` +
     `🆔 *Payment ID:* \`${payment.id}\`\n` +
-    `⚡ *Wallet:* \`${user.lightning_address}\`\n` +
-    `🚀 *Webhook Dispatched:* ${user.webhook_url ? 'Yes' : 'No Webhook configured'}\n` +
     `🕒 *Settled At:* ${new Date().toUTCString()}`;
 
   return sendTelegramMessage(token, chatId, msg);
@@ -101,4 +111,3 @@ module.exports = {
   notifyInvoiceCreated,
   notifyPaymentCompleted
 };
-
