@@ -210,5 +210,6 @@ module.exports = {
   router,
   requireAuth,
   requireStaff,
+  generateToken,
   sanitizeUser
 };

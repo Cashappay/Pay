@@ -300,6 +300,38 @@ class Database {
     return page;
   }
 
+  updatePage(id, updates) {
+    const page = this.findPageById(id);
+    if (!page) return null;
+
+    if (updates.title !== undefined) page.title = updates.title.trim();
+    if (updates.receiver_name !== undefined) page.receiver_name = updates.receiver_name.trim();
+    if (updates.description !== undefined) page.description = updates.description.trim();
+    if (updates.type !== undefined) page.type = updates.type === 'fixed' ? 'fixed' : 'keypad';
+    if (updates.fixed_amount !== undefined) page.fixed_amount = parseFloat(updates.fixed_amount) || 0;
+    if (updates.custom_wallet !== undefined) page.custom_wallet = updates.custom_wallet.trim();
+    if (updates.success_url !== undefined) page.success_url = updates.success_url.trim();
+    if (updates.is_verified !== undefined) page.is_verified = Boolean(updates.is_verified);
+    if (updates.is_active !== undefined) page.is_active = Boolean(updates.is_active);
+    if (updates.user_id !== undefined) page.user_id = updates.user_id;
+
+    if (updates.slug) {
+      const cleanSlug = updates.slug
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+      const existing = this.data.pages.find(p => p.slug.toLowerCase() === cleanSlug && p.id !== id);
+      if (existing) {
+        throw new Error('This pay link slug is already taken. Please choose another.');
+      }
+      page.slug = cleanSlug;
+    }
+
+    this.save();
+    return page;
+  }
+
   deletePage(id, userId, isStaff = false) {
     const index = this.data.pages.findIndex(p => p.id === id && (isStaff || p.user_id === userId));
     if (index === -1) return false;
