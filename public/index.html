@@ -168,29 +168,6 @@
         </button>
       </div>
 
-      <!-- Quick Demo Login Helpers -->
-      <div class="mb-5 space-y-2">
-        <div class="p-2.5 rounded-xl bg-[#00D632]/10 border border-[#00D632]/30 flex items-center justify-between text-xs">
-          <div>
-            <p class="font-bold text-white">Merchant Login</p>
-            <p class="text-[10px] text-neutral-400 font-mono">demo@cashapp-gateway.com</p>
-          </div>
-          <button onclick="fillDemoCredentials('user')" class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-3 py-1 rounded-lg text-xs">
-            Merchant
-          </button>
-        </div>
-
-        <div class="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-between text-xs">
-          <div>
-            <p class="font-bold text-purple-300">Owner & Admin Login</p>
-            <p class="text-[10px] text-neutral-400 font-mono">owner@cashapp-gateway.com</p>
-          </div>
-          <button onclick="fillDemoCredentials('owner')" class="bg-purple-600 hover:bg-purple-500 text-white font-extrabold px-3 py-1 rounded-lg text-xs">
-            Owner
-          </button>
-        </div>
-      </div>
-
       <!-- Sign In Form -->
       <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
         <div>
@@ -287,17 +264,6 @@
         signupForm.classList.remove("hidden");
         loginForm.classList.add("hidden");
       }
-    }
-
-    function fillDemoCredentials(type) {
-      if (type === 'owner') {
-        document.getElementById("loginEmail").value = "owner@cashapp-gateway.com";
-        document.getElementById("loginPassword").value = "admin123";
-      } else {
-        document.getElementById("loginEmail").value = "demo@cashapp-gateway.com";
-        document.getElementById("loginPassword").value = "user123";
-      }
-      switchAuthTab("login");
     }
 
     async function handleLoginSubmit(e) {
