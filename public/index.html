@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash App Lightning Gateway • Accept Bitcoin Lightning via Cash App</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #070707;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glow-green {
+      box-shadow: 0 0 50px rgba(0, 214, 50, 0.2);
+    }
+
+    .glass-card {
+      background: rgba(20, 20, 20, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col selection:bg-[#00D632] selection:text-black">
+
+  <!-- Navigation Bar -->
+  <header class="w-full border-b border-neutral-800/80 bg-[#0A0A0A]/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group">
+        <img src="/assets/cashapp-logo.svg" alt="Cash App Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition" />
+        <div>
+          <div class="text-lg font-extrabold tracking-tight text-white flex items-center space-x-1.5">
+            <span>Cash App</span>
+            <span class="text-[#00D632]">Pay</span>
+            <span class="text-[10px] bg-[#00D632]/10 border border-[#00D632]/30 text-[#00D632] font-mono px-2 py-0.5 rounded-full ml-1">⚡ Lightning</span>
+          </div>
+          <p class="text-[11px] text-neutral-400 font-medium">Crypto Lightning Payment Gateway</p>
+        </div>
+      </a>
+
+      <!-- Header CTAs -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openAuthModal('login')"
+          class="text-xs sm:text-sm font-bold text-neutral-300 hover:text-white px-3.5 py-2 rounded-xl transition">
+          Sign In
+        </button>
+        <button onclick="openAuthModal('signup')"
+          class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition">
+          Get Started Free
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+    <!-- Left Hero Content -->
+    <div class="lg:w-1/2 space-y-6 text-center lg:text-left">
+      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#00D632] text-xs font-bold">
+        <span>⚡ 100% Cash App Crypto Lightning Only</span>
+        <span>•</span>
+        <span>Zero Chargebacks</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]">
+        Accept <span class="text-[#00D632]">Cash App</span> Payments In Seconds.
+      </h1>
+
+      <p class="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto lg:mx-0">
+        Empower your business or donation page to accept Bitcoin Lightning directly from the official Cash App mobile application. Instant settlement, secure backend webhooks, and zero merchant fees.
+      </p>
+
+      <!-- Key Value Points -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left">
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">⚡</div>
+          <h4 class="text-xs font-extrabold text-white">Instant Settlement</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">Funds settle directly to your Lightning address in 2 seconds.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">📱</div>
+          <h4 class="text-xs font-extrabold text-white">Deep-Linked App</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">Automatically launches Cash App on iOS and Android phones.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">🔗</div>
+          <h4 class="text-xs font-extrabold text-white">Accurate Webhooks</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">HMAC-SHA256 signed event hooks with delivery logs.</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+        <button onclick="openAuthModal('signup')"
+          class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#00D632] hover:bg-[#00b82b] text-black font-black text-sm shadow-xl shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center space-x-2">
+          <span>Create Your Payment Page</span>
+          <span>→</span>
+        </button>
+
+        <a href="/pay.html?slug=natasha-torres" target="_blank"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-2xl glass-card hover:bg-neutral-800 text-white font-bold text-sm transition flex items-center justify-center space-x-2">
+          <span>👁️ Try Live Demo</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Hero: Live Interactive Checkout Preview -->
+    <div class="lg:w-1/2 flex justify-center w-full">
+      <div class="relative w-full max-w-sm rounded-[36px] p-2 bg-gradient-to-b from-neutral-800 to-neutral-900 border border-neutral-700 glow-green shadow-2xl">
+        <!-- Mock Phone Frame -->
+        <div class="rounded-[30px] overflow-hidden bg-black border border-neutral-800 relative h-[650px]">
+          <iframe src="/pay.html?slug=natasha-torres" class="w-full h-full border-0 select-none"></iframe>
+        </div>
+        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900 border border-neutral-700 px-4 py-1 rounded-full text-[11px] font-bold text-[#00D632] shadow-lg whitespace-nowrap">
+          Interactive Live Simulator ⚡
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Developer Webhook Integration Feature Section -->
+  <section class="border-t border-neutral-800/80 bg-[#0A0A0A] py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Enterprise Webhook Integration</h2>
+        <p class="text-sm text-neutral-400 mt-2">Connect your WooCommerce, Shopify, custom PHP, or Node.js website with cryptographic HMAC verification.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-[#00D632]/10 text-[#00D632] flex items-center justify-center font-bold text-lg mb-4">
+            🔐
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">HMAC-SHA256 Signatures</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            Every webhook includes a timestamped <code class="text-[#00D632]">X-CashApp-Signature</code> header so your website can verify each payment's authenticity with zero spoofing risk.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-lg mb-4">
+            🔄
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">Live Webhook Tester</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            Test your website endpoint with one click right from the merchant dashboard. View the HTTP status code, latency (ms), and response body.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg mb-4">
+            🛡️
+          </div>
+          <h3 class="text-base font-bold text-white mb-2">100% Backend Protected</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            Telegram bot tokens, chat IDs, secret keys, and payout routes run strictly on the server backend. WebViews and customer browsers never see your credentials.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-neutral-900 py-8 bg-[#070707] text-neutral-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <img src="/assets/cashapp-logo.svg" alt="Logo" class="w-5 h-5 rounded-md" />
+        <span class="font-bold text-neutral-400">Cash App Lightning Gateway</span>
+      </div>
+      <p>© 2026 Cash App Lightning Gateway. Powered by Bitcoin Lightning Network & LNURL.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== AUTH MODAL (LOGIN / SIGNUP) ==================== -->
+  <div id="authModalBackdrop" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#121212] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-white shadow-2xl relative">
+      <button onclick="closeAuthModal()"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 flex items-center justify-center text-neutral-400 hover:text-white transition">
+        ✕
+      </button>
+
+      <!-- Modal Tabs: Login / Sign Up -->
+      <div class="flex items-center space-x-4 border-b border-neutral-800 pb-3 mb-6">
+        <button onclick="switchAuthTab('login')" id="authTabLogin" class="text-lg font-black text-white border-b-2 border-[#00D632] pb-1">
+          Sign In
+        </button>
+        <button onclick="switchAuthTab('signup')" id="authTabSignup" class="text-lg font-black text-neutral-500 hover:text-white pb-1">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Quick Demo Login Button -->
+      <div class="mb-5 p-3 rounded-2xl bg-[#00D632]/10 border border-[#00D632]/30 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-white">Try Demo Merchant</p>
+          <p class="text-[10px] text-neutral-400 font-mono">demo@cashapp-gateway.com</p>
+        </div>
+        <button onclick="fillDemoCredentials()" class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-3 py-1.5 rounded-xl text-xs transition">
+          1-Click Demo
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="you@merchant.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div id="loginError" class="text-rose-400 text-xs hidden"></div>
+
+        <button type="submit" id="loginSubmitBtn"
+          class="w-full bg-[#00D632] hover:bg-[#00b82b] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98">
+          Sign In to Dashboard
+        </button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="signupForm" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Full Name / Merchant Name</label>
+          <input type="text" id="signupName" required placeholder="Natasha Torres"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address</label>
+          <input type="email" id="signupEmail" required placeholder="you@merchant.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Password (min 6 characters)</label>
+          <input type="password" id="signupPassword" required minlength="6" placeholder="••••••••"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">
+            Lightning Payout Address <span class="text-[#00D632]">*</span>
+          </label>
+          <input type="text" id="signupLightningAddress" placeholder="user@walletofsatoshi.com or user@blink.sv"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          <p class="text-[10px] text-neutral-500 mt-1">Where your customer Cash App payments will be received.</p>
+        </div>
+        <div id="signupError" class="text-rose-400 text-xs hidden"></div>
+
+        <button type="submit" id="signupSubmitBtn"
+          class="w-full bg-[#00D632] hover:bg-[#00b82b] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98">
+          Create Account & Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Check if already logged in
+    const token = localStorage.getItem("cashapp_auth_token");
+    if (token) {
+      // User already logged in, redirect to dashboard if desired
+    }
+
+    // URL parameter check for ?login=1
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("login")) {
+      openAuthModal("login");
+    }
+
+    function openAuthModal(tab = "login") {
+      document.getElementById("authModalBackdrop").classList.remove("hidden");
+      switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModalBackdrop").classList.add("hidden");
+    }
+
+    function switchAuthTab(tab) {
+      const loginTab = document.getElementById("authTabLogin");
+      const signupTab = document.getElementById("authTabSignup");
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+
+      if (tab === "login") {
+        loginTab.className = "text-lg font-black text-white border-b-2 border-[#00D632] pb-1";
+        signupTab.className = "text-lg font-black text-neutral-500 hover:text-white pb-1";
+        loginForm.classList.remove("hidden");
+        signupForm.classList.add("hidden");
+      } else {
+        signupTab.className = "text-lg font-black text-white border-b-2 border-[#00D632] pb-1";
+        loginTab.className = "text-lg font-black text-neutral-500 hover:text-white pb-1";
+        signupForm.classList.remove("hidden");
+        loginForm.classList.add("hidden");
+      }
+    }
+
+    function fillDemoCredentials() {
+      document.getElementById("loginEmail").value = "demo@cashapp-gateway.com";
+      document.getElementById("loginPassword").value = "admin123";
+      switchAuthTab("login");
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const errBox = document.getElementById("loginError");
+      errBox.classList.add("hidden");
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem("cashapp_auth_token", data.token);
+          window.location.href = "/dashboard.html";
+        } else {
+          errBox.innerText = data.error || "Login failed";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error during login";
+        errBox.classList.remove("hidden");
+      }
+    }
+
+    async function handleSignupSubmit(e) {
+      e.preventDefault();
+      const errBox = document.getElementById("signupError");
+      errBox.classList.add("hidden");
+
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const lightning_address = document.getElementById("signupLightningAddress").value;
+
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password, lightning_address })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem("cashapp_auth_token", data.token);
+          window.location.href = "/dashboard.html";
+        } else {
+          errBox.innerText = data.error || "Registration failed";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error during sign up";
+        errBox.classList.remove("hidden");
+      }
+    }
+  </script>
+</body>
+
+</html>
+
