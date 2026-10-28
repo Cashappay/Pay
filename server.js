@@ -45,6 +45,16 @@ app.get(['/profile', '/profile/', '/profile.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'profile.html'));
 });
 
+// User Sign-Up & Registration: /signup & /register
+app.get(['/signup', '/signup/', '/register', '/register/', '/signup.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+// User Sign-In: /login
+app.get(['/login', '/login/', '/login.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 // Legacy /dashboard alias -> Serves Admin or Profile
 app.get(['/dashboard', '/dashboard.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));

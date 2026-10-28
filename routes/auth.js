@@ -94,8 +94,14 @@ router.post('/register', (req, res) => {
       return res.status(400).json({ success: false, error: 'You must agree to the Terms and Conditions to register.' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long.' });
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 8 characters long.' });
+    }
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Password must contain at least one uppercase letter, one number, and one special character.'
+      });
     }
 
     const existing = db.findUserByEmail(email);

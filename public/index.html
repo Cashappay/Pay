@@ -189,21 +189,49 @@
       </form>
 
       <!-- Sign Up Form -->
-      <form id="signupForm" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden">
-        <div>
-          <label class="block text-xs font-bold text-neutral-300 mb-1">Full Name / Merchant Name</label>
-          <input type="text" id="signupName" required placeholder="Natasha Torres"
-            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+      <form id="signupForm" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden" noValidate>
+        <!-- Server Error Alert Banner -->
+        <div id="signupErrorBanner" class="hidden p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start space-x-2.5 text-rose-400 text-xs">
+          <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2" />
+            <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" />
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2" />
+          </svg>
+          <span id="signupErrorMsg">Error occurred</span>
         </div>
+
+        <!-- 1. Full Name -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Full Name</label>
+          <input type="text" id="signupName" oninput="validateSignupName()" onblur="validateSignupName()" required placeholder="Natasha Torres"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+          <p id="nameError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
+        </div>
+
+        <!-- 2. Email Address -->
         <div>
           <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address</label>
-          <input type="email" id="signupEmail" required placeholder="you@merchant.com"
-            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          <input type="email" id="signupEmail" oninput="validateSignupEmail()" onblur="validateSignupEmail()" required placeholder="you@merchant.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+          <p id="emailError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
         </div>
+
+        <!-- 3. Password with Show/Hide Eye Toggle -->
         <div>
-          <label class="block text-xs font-bold text-neutral-300 mb-1">Password (min 6 characters)</label>
-          <input type="password" id="signupPassword" required minlength="6" placeholder="••••••••"
-            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Password</label>
+          <div class="relative">
+            <input type="password" id="signupPassword" oninput="validateSignupPassword()" onblur="validateSignupPassword()" required placeholder="At least 8 characters"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl pl-4 pr-11 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+            <button type="button" onclick="toggleSignupPasswordVisibility()" tabIndex="-1" aria-label="Toggle password visibility"
+              class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-white transition">
+              <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+          <p id="passwordError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
+          <p id="passwordHint" class="text-[10px] text-neutral-500 mt-1">Must be 8+ chars with at least 1 uppercase letter, 1 number, and 1 special symbol.</p>
         </div>
 
         <!-- Mandatory Terms & Conditions Checkbox -->
@@ -214,12 +242,24 @@
           </label>
         </div>
 
-        <div id="signupError" class="text-rose-400 text-xs hidden"></div>
-
+        <!-- Submit Button with Spinner -->
         <button type="submit" id="signupSubmitBtn"
-          class="w-full bg-[#00D632] hover:bg-[#00b82b] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98">
-          Create Account & Profile
+          class="w-full bg-[#00D632] hover:bg-[#00c02d] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+          <span id="signupBtnSpinner" class="hidden">
+            <svg class="animate-spin w-4 h-4 text-black" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          <span id="signupBtnText">Create Account</span>
         </button>
+
+        <!-- Bottom Link -->
+        <div class="pt-3 border-t border-neutral-800 text-center">
+          <p class="text-xs text-neutral-400">
+            Already have an account? <button type="button" onclick="switchAuthTab('login')" class="text-[#00D632] font-bold hover:underline ml-1">Log in</button>
+          </p>
+        </div>
       </form>
     </div>
   </div>
@@ -287,21 +327,130 @@
       }
     }
 
+    let isSignupPasswordVisible = false;
+
+    function toggleSignupPasswordVisibility() {
+      const passInput = document.getElementById("signupPassword");
+      const eyeIcon = document.getElementById("eyeIcon");
+      isSignupPasswordVisible = !isSignupPasswordVisible;
+      passInput.type = isSignupPasswordVisible ? "text" : "password";
+
+      if (isSignupPasswordVisible) {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+        `;
+      } else {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        `;
+      }
+    }
+
+    function validateSignupName() {
+      const name = document.getElementById("signupName").value.trim();
+      const err = document.getElementById("nameError");
+      if (!name) {
+        err.innerText = "• Full name is required.";
+        err.classList.remove("hidden");
+        return false;
+      } else if (name.length < 2) {
+        err.innerText = "• Full name must be at least 2 characters.";
+        err.classList.remove("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      return true;
+    }
+
+    function validateSignupEmail() {
+      const email = document.getElementById("signupEmail").value.trim();
+      const err = document.getElementById("emailError");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email) {
+        err.innerText = "• Email address is required.";
+        err.classList.remove("hidden");
+        return false;
+      } else if (!emailRegex.test(email)) {
+        err.innerText = "• Please enter a valid email address.";
+        err.classList.remove("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      return true;
+    }
+
+    function validateSignupPassword() {
+      const pass = document.getElementById("signupPassword").value;
+      const err = document.getElementById("passwordError");
+      const hint = document.getElementById("passwordHint");
+      if (!pass) {
+        err.innerText = "• Password is required.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (pass.length < 8) {
+        err.innerText = "• Password must be at least 8 characters long.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[A-Z]/.test(pass)) {
+        err.innerText = "• Password must contain at least one uppercase letter.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[0-9]/.test(pass)) {
+        err.innerText = "• Password must contain at least one number.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) {
+        err.innerText = "• Password must contain at least one special character.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      if (hint) hint.classList.remove("hidden");
+      return true;
+    }
+
     async function handleSignupSubmit(e) {
       e.preventDefault();
-      const errBox = document.getElementById("signupError");
-      errBox.classList.add("hidden");
+      const banner = document.getElementById("signupErrorBanner");
+      const bannerMsg = document.getElementById("signupErrorMsg");
+      banner.classList.add("hidden");
 
-      const agreed = document.getElementById("signupTermsCheckbox").checked;
-      if (!agreed) {
-        errBox.innerText = "You must agree to the Terms and Conditions.";
-        errBox.classList.remove("hidden");
+      const isNameValid = validateSignupName();
+      const isEmailValid = validateSignupEmail();
+      const isPasswordValid = validateSignupPassword();
+
+      if (!isNameValid || !isEmailValid || !isPasswordValid) {
         return;
       }
 
-      const name = document.getElementById("signupName").value;
-      const email = document.getElementById("signupEmail").value;
+      const agreed = document.getElementById("signupTermsCheckbox").checked;
+      if (!agreed) {
+        bannerMsg.innerText = "You must agree to the Terms and Conditions to proceed.";
+        banner.classList.remove("hidden");
+        return;
+      }
+
+      const name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value;
+
+      const submitBtn = document.getElementById("signupSubmitBtn");
+      const spinner = document.getElementById("signupBtnSpinner");
+      const btnText = document.getElementById("signupBtnText");
+
+      submitBtn.disabled = true;
+      spinner.classList.remove("hidden");
+      btnText.innerText = "Creating Account...";
 
       try {
         const res = await fetch("/api/auth/register", {
@@ -314,12 +463,16 @@
           localStorage.setItem("cashapp_auth_token", data.token);
           window.location.href = "/profile";
         } else {
-          errBox.innerText = data.error || "Registration failed";
-          errBox.classList.remove("hidden");
+          bannerMsg.innerText = data.error || "Registration failed. Please try again.";
+          banner.classList.remove("hidden");
         }
       } catch (err) {
-        errBox.innerText = "Network error during sign up";
-        errBox.classList.remove("hidden");
+        bannerMsg.innerText = "Network error during sign up. Please try again.";
+        banner.classList.remove("hidden");
+      } finally {
+        submitBtn.disabled = false;
+        spinner.classList.add("hidden");
+        btnText.innerText = "Create Account";
       }
     }
   </script>
