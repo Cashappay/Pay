@@ -205,6 +205,15 @@ class Database {
     if (!user) return null;
 
     if (updates.name !== undefined) user.name = updates.name.trim();
+    if (updates.dob !== undefined) user.dob = updates.dob.trim();
+    if (updates.email) {
+      const cleanEmail = updates.email.trim().toLowerCase();
+      const existing = this.data.users.find(u => u.email.toLowerCase() === cleanEmail && u.id !== id);
+      if (existing) {
+        throw new Error('This email address is already in use by another account.');
+      }
+      user.email = cleanEmail;
+    }
     if (updates.lightning_address !== undefined) user.lightning_address = updates.lightning_address.trim();
     if (updates.status !== undefined) user.status = updates.status;
     if (updates.role !== undefined) user.role = updates.role;

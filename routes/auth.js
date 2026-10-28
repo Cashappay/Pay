@@ -72,6 +72,7 @@ function sanitizeUser(user) {
     id: user.id,
     name: user.name,
     email: user.email,
+    dob: user.dob || '',
     role: user.role || 'user',
     status: user.status || 'active',
     lightning_address: user.lightning_address,
@@ -179,21 +180,23 @@ router.get('/me', requireAuth, (req, res) => {
 // PUT /api/auth/profile
 router.put('/profile', requireAuth, (req, res) => {
   try {
-    const { name, lightning_address, password } = req.body;
+    const { name, email, dob, lightning_address, password } = req.body;
 
     const updates = {};
-    if (name) updates.name = name;
-    if (lightning_address !== undefined) updates.lightning_address = lightning_address;
+    if (name) updates.name = name.trim();
+    if (email) updates.email = email.trim();
+    if (dob !== undefined) updates.dob = dob.trim();
+    if (lightning_address !== undefined) updates.lightning_address = lightning_address.trim();
     if (password && password.length >= 6) updates.password = password;
 
     const updated = db.updateUser(req.user.id, updates);
     res.json({
       success: true,
       user: sanitizeUser(updated),
-      message: 'Profile updated successfully.'
+      message: 'Profile settings updated successfully.'
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Failed to update profile: ' + err.message });
+    res.status(400).json({ success: false, error: err.message || 'Failed to update profile.' });
   }
 });
 
