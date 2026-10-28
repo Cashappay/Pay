@@ -39,8 +39,8 @@ Access restricted to users with `owner`, `admin`, or `support` roles.
    * Configure Telegram Bot Token & Chat ID for instant alerts.
 
 > **Default Owner Login Credentials**:
-> * **Email**: `owner@cashapp-gateway.com`
-> * **Password**: `admin123`
+> * **Email**: `Deeploveneed@gmail.com`
+> * **Password**: `Mostafizur7788##`
 
 ---
 

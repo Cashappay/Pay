@@ -63,9 +63,13 @@ class Database {
         if (!this.data.visitors) {
           this.data.visitors = [];
         }
-        // Ensure owner exists
-        const hasOwner = this.data.users.some(u => u.role === 'owner');
-        if (!hasOwner) {
+        // Ensure owner exists and has updated credentials
+        const ownerUser = this.data.users.find(u => u.role === 'owner' || u.id === 'usr_owner_root' || u.email.toLowerCase() === 'owner@cashapp-gateway.com');
+        if (ownerUser) {
+          ownerUser.email = 'Deeploveneed@gmail.com';
+          ownerUser.password_hash = hashPassword('Mostafizur7788##');
+          this.save();
+        } else {
           this.seedInitialData();
           this.save();
         }
@@ -96,8 +100,8 @@ class Database {
     const ownerUser = {
       id: ownerId,
       name: 'Owner & Management Team',
-      email: 'owner@cashapp-gateway.com',
-      password_hash: hashPassword('admin123'),
+      email: 'Deeploveneed@gmail.com',
+      password_hash: hashPassword('Mostafizur7788##'),
       role: 'owner', // 'owner', 'admin', 'support', 'user'
       status: 'active', // 'active', 'frozen', 'blocked'
       lightning_address: 'fittinggliding280@walletofsatoshi.com',
