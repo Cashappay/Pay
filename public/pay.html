@@ -400,6 +400,20 @@
   </div>
 
   <script>
+    // Immediately normalize address bar to /pay/:slug (remove .html and query string from URL)
+    (function normalizeAddressBar() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get("slug") || urlParams.get("to") || urlParams.get("p") || urlParams.get("pay");
+        if (window.location.pathname.includes(".html") || slug) {
+          const finalSlug = slug || window.location.pathname.split("/").filter(Boolean).pop().replace(".html", "");
+          if (finalSlug && finalSlug !== "pay" && finalSlug !== "index") {
+            window.history.replaceState({}, document.title, `/pay/${finalSlug}`);
+          }
+        }
+      } catch (e) { }
+    })();
+
     // Cash App SVG Logo for center of QR Code
     const CASHAPP_SVG_ICON = "/assets/cashapp-logo.svg";
 

@@ -23,15 +23,34 @@ app.use(cors({
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Clean URL Routing Middleware (strip .html extensions from browser URL)
+// Clean URL Routing Middleware (strip .html extensions and normalize /pay?slug=xyz to /pay/xyz)
 app.use((req, res, next) => {
+  // If payment page requested via /pay.html or /pay with query param slug/to/p
+  const slug = req.query.slug || req.query.to || req.query.p || req.query.pay;
+  if ((req.path === '/pay' || req.path === '/pay.html') && slug) {
+    return res.redirect(301, `/pay/${encodeURIComponent(slug)}`);
+  }
+
+  // Handle any other .html extensions
   if (req.path.endsWith('.html')) {
     const cleanPath = req.path.slice(0, -5);
     const query = req.url.slice(req.path.length);
     if (cleanPath === '/dashboard') return res.redirect(301, '/profile' + query);
+    if (cleanPath === '/pay') {
+      return res.redirect(301, '/pay/natasha-torres' + query);
+    }
     return res.redirect(301, cleanPath + query);
   }
   next();
+});
+
+// Handle /pay without slug
+app.get('/pay', (req, res) => {
+  const slug = req.query.slug || req.query.to || req.query.p || req.query.pay;
+  if (slug) {
+    return res.redirect(301, `/pay/${encodeURIComponent(slug)}`);
+  }
+  res.redirect(301, '/pay/natasha-torres');
 });
 
 // Mount Static Assets (without index.html override)

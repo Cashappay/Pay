@@ -64,7 +64,7 @@
     <div>
       <!-- Brand Logo Header -->
       <div class="p-5 flex items-center justify-between border-b border-neutral-800/80">
-        <a href="/dashboard.html" class="flex items-center space-x-3">
+        <a href="/admin" class="flex items-center space-x-3">
           <img src="/assets/cashapp-logo.svg" alt="Cash App Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-emerald-500/20" />
           <div>
             <div class="text-base font-extrabold tracking-tight text-white flex items-center space-x-1">
@@ -792,8 +792,7 @@ def cashapp_webhook():
     // Check auth on load
     async function initDashboard() {
       if (!authToken) {
-        // Redirect to portal if no token
-        window.location.href = "/index.html?login=1";
+        window.location.href = "/?login=1";
         return;
       }
 
@@ -804,7 +803,7 @@ def cashapp_webhook():
         const data = await res.json();
         if (!data.success) {
           localStorage.removeItem("cashapp_auth_token");
-          window.location.href = "/index.html?login=1";
+          window.location.href = "/?login=1";
           return;
         }
 
@@ -919,7 +918,7 @@ def cashapp_webhook():
       const origin = window.location.origin;
 
       grid.innerHTML = userPages.map(page => {
-        const pageUrl = `${origin}/pay.html?slug=${page.slug}`;
+        const pageUrl = `${origin}/pay/${page.slug}`;
         const totalCollected = page.stats ? `$${page.stats.total_usd}` : "$0.00";
         const txCount = page.stats ? page.stats.completed_transactions : 0;
 
@@ -961,7 +960,7 @@ def cashapp_webhook():
                   class="bg-neutral-800 hover:bg-neutral-700 py-2 rounded-xl text-neutral-200 transition text-center flex items-center justify-center space-x-1">
                   <span>🔗</span> <span>Copy Link</span>
                 </button>
-                <a href="/pay.html?slug=${page.slug}" target="_blank"
+                <a href="/pay/${page.slug}" target="_blank"
                   class="bg-[#00D632]/10 hover:bg-[#00D632]/20 text-[#00D632] py-2 rounded-xl text-center transition flex items-center justify-center space-x-1">
                   <span>👁️</span> <span>Preview</span>
                 </a>
@@ -1221,7 +1220,7 @@ def cashapp_webhook():
       if (!page) return;
 
       const origin = window.location.origin;
-      const checkoutUrl = `${origin}/pay.html?slug=${page.slug}`;
+      const checkoutUrl = `${origin}/pay/${page.slug}`;
 
       document.getElementById("embedPageTitle").innerText = `Integration for: ${page.title} (/pay/${page.slug})`;
       document.getElementById("embedDirectLink").value = checkoutUrl;
@@ -1406,7 +1405,7 @@ def cashapp_webhook():
 
     function handleLogout() {
       localStorage.removeItem("cashapp_auth_token");
-      window.location.href = "/index.html";
+      window.location.href = "/";
     }
 
     // Initialize Dashboard
