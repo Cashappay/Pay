@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash App Lightning Gateway • Accept Bitcoin Lightning via Cash App</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #070707;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glow-green {
+      box-shadow: 0 0 50px rgba(0, 214, 50, 0.2);
+    }
+
+    .glass-card {
+      background: rgba(20, 20, 20, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col selection:bg-[#00D632] selection:text-black">
+
+  <!-- Navigation Bar -->
+  <header class="w-full border-b border-neutral-800/80 bg-[#0A0A0A]/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group">
+        <img src="/assets/cashapp-logo.svg" alt="Cash App Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition" />
+        <div>
+          <div class="text-lg font-extrabold tracking-tight text-white flex items-center space-x-1.5">
+            <span>Cash App</span>
+            <span class="text-[#00D632]">Pay</span>
+            <span class="text-[10px] bg-[#00D632]/10 border border-[#00D632]/30 text-[#00D632] font-mono px-2 py-0.5 rounded-full ml-1">⚡ Lightning</span>
+          </div>
+          <p class="text-[11px] text-neutral-400 font-medium">Crypto Lightning Payment Gateway</p>
+        </div>
+      </a>
+
+      <!-- Header CTAs -->
+      <div class="flex items-center space-x-3">
+        <button onclick="openAuthModal('login')"
+          class="text-xs sm:text-sm font-bold text-neutral-300 hover:text-white px-3.5 py-2 rounded-xl transition">
+          Sign In
+        </button>
+        <button onclick="openAuthModal('signup')"
+          class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition">
+          Get Started Free
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+    <!-- Left Hero Content -->
+    <div class="lg:w-1/2 space-y-6 text-center lg:text-left">
+      <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#00D632] text-xs font-bold">
+        <span>⚡ 100% Cash App Crypto Lightning Only</span>
+        <span>•</span>
+        <span>Zero Chargebacks</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]">
+        Accept <span class="text-[#00D632]">Cash App</span> Payments In Seconds.
+      </h1>
+
+      <p class="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto lg:mx-0">
+        Empower your business or donation page to accept Bitcoin Lightning directly from the official Cash App mobile application. Instant settlement, high conversion rate, and zero merchant setup hassle.
+      </p>
+
+      <!-- Key Value Points -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left">
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">⚡</div>
+          <h4 class="text-xs font-extrabold text-white">Instant Settlement</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">Funds settle directly to your Satoshi wallet in seconds.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">📱</div>
+          <h4 class="text-xs font-extrabold text-white">Deep-Linked App</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">Automatically launches Cash App on iOS and Android phones.</p>
+        </div>
+        <div class="p-3.5 rounded-2xl glass-card">
+          <div class="text-lg mb-1">🔒</div>
+          <h4 class="text-xs font-extrabold text-white">Zero Chargebacks</h4>
+          <p class="text-[11px] text-neutral-400 mt-0.5">Cryptographically irreversible Bitcoin Lightning transactions.</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+        <button onclick="openAuthModal('signup')"
+          class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#00D632] hover:bg-[#00b82b] text-black font-black text-sm shadow-xl shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center space-x-2">
+          <span>Create Your Payment Page</span>
+          <span>→</span>
+        </button>
+
+        <a href="/pay/natasha-torres" target="_blank"
+          class="w-full sm:w-auto px-6 py-3.5 rounded-2xl glass-card hover:bg-neutral-800 text-white font-bold text-sm transition flex items-center justify-center space-x-2">
+          <span>👁️ Try Live Demo</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Hero: Live Interactive Checkout Preview -->
+    <div class="lg:w-1/2 flex justify-center w-full">
+      <div class="relative w-full max-w-sm rounded-[36px] p-2 bg-gradient-to-b from-neutral-800 to-neutral-900 border border-neutral-700 glow-green shadow-2xl">
+        <!-- Mock Phone Frame -->
+        <div class="rounded-[30px] overflow-hidden bg-black border border-neutral-800 relative h-[650px]">
+          <iframe src="/pay/natasha-torres" class="w-full h-full border-0 select-none"></iframe>
+        </div>
+        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900 border border-neutral-700 px-4 py-1 rounded-full text-[11px] font-bold text-[#00D632] shadow-lg whitespace-nowrap">
+          Interactive Live Simulator ⚡
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Website Last / Footer with Terms and Conditions button -->
+  <footer class="border-t border-neutral-900 py-10 bg-[#070707] text-neutral-500 text-xs mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center space-x-2">
+        <img src="/assets/cashapp-logo.svg" alt="Logo" class="w-5 h-5 rounded-md" />
+        <span class="font-bold text-neutral-400">Cash App Lightning Gateway</span>
+      </div>
+
+      <!-- Terms & Conditions Button at the website end -->
+      <div class="flex items-center space-x-6">
+        <a href="/terms"
+          class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white transition font-medium border border-neutral-800">
+          📜 Terms and Conditions
+        </a>
+      </div>
+
+      <p>© 2026 Cash App Lightning Gateway. Powered by Bitcoin Lightning Network & LNURL.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== AUTH MODAL (LOGIN / SIGNUP) ==================== -->
+  <div id="authModalBackdrop" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#121212] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-white shadow-2xl relative">
+      <button onclick="closeAuthModal()"
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 flex items-center justify-center text-neutral-400 hover:text-white transition">
+        ✕
+      </button>
+
+      <!-- Modal Tabs: Login / Sign Up -->
+      <div class="flex items-center space-x-4 border-b border-neutral-800 pb-3 mb-6">
+        <button onclick="switchAuthTab('login')" id="authTabLogin" class="text-lg font-black text-white border-b-2 border-[#00D632] pb-1">
+          Sign In
+        </button>
+        <button onclick="switchAuthTab('signup')" id="authTabSignup" class="text-lg font-black text-neutral-500 hover:text-white pb-1">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address</label>
+          <input type="email" id="loginEmail" required placeholder="you@merchant.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+        <div id="loginError" class="text-rose-400 text-xs hidden"></div>
+
+        <button type="submit" id="loginSubmitBtn"
+          class="w-full bg-[#00D632] hover:bg-[#00b82b] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="signupForm" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden" noValidate>
+        <!-- Server Error Alert Banner -->
+        <div id="signupErrorBanner" class="hidden p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start space-x-2.5 text-rose-400 text-xs">
+          <svg class="w-4 h-4 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2" />
+            <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" />
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2" />
+          </svg>
+          <span id="signupErrorMsg">Error occurred</span>
+        </div>
+
+        <!-- 1. Full Name -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Full Name</label>
+          <input type="text" id="signupName" oninput="validateSignupName()" onblur="validateSignupName()" required placeholder="Natasha Torres"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+          <p id="nameError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
+        </div>
+
+        <!-- 2. Email Address -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address</label>
+          <input type="email" id="signupEmail" oninput="validateSignupEmail()" onblur="validateSignupEmail()" required placeholder="you@merchant.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+          <p id="emailError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
+        </div>
+
+        <!-- 3. Password with Show/Hide Eye Toggle -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Password</label>
+          <div class="relative">
+            <input type="password" id="signupPassword" oninput="validateSignupPassword()" onblur="validateSignupPassword()" required placeholder="At least 8 characters"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl pl-4 pr-11 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] focus:ring-2 focus:ring-[#00D632]/20 transition" />
+            <button type="button" onclick="toggleSignupPasswordVisibility()" tabIndex="-1" aria-label="Toggle password visibility"
+              class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-white transition">
+              <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+          <p id="passwordError" class="text-[11px] text-rose-400 mt-1 font-medium hidden"></p>
+          <p id="passwordHint" class="text-[10px] text-neutral-500 mt-1">Must be 8+ chars with at least 1 uppercase letter, 1 number, and 1 special symbol.</p>
+        </div>
+
+        <!-- Mandatory Terms & Conditions Checkbox -->
+        <div class="flex items-start space-x-2 pt-1">
+          <input type="checkbox" id="signupTermsCheckbox" required class="rounded accent-[#00D632] mt-0.5" />
+          <label for="signupTermsCheckbox" class="text-xs text-neutral-400 select-none">
+            I agree to the <a href="/terms" target="_blank" class="text-[#00D632] underline hover:text-emerald-300">Terms and Conditions</a>
+          </label>
+        </div>
+
+        <!-- Submit Button with Spinner -->
+        <button type="submit" id="signupSubmitBtn"
+          class="w-full bg-[#00D632] hover:bg-[#00c02d] text-black font-black py-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+          <span id="signupBtnSpinner" class="hidden">
+            <svg class="animate-spin w-4 h-4 text-black" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          <span id="signupBtnText">Create Account</span>
+        </button>
+
+        <!-- Bottom Link -->
+        <div class="pt-3 border-t border-neutral-800 text-center">
+          <p class="text-xs text-neutral-400">
+            Already have an account? <button type="button" onclick="switchAuthTab('login')" class="text-[#00D632] font-bold hover:underline ml-1">Log in</button>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("login")) {
+      openAuthModal("login");
+    }
+
+    function openAuthModal(tab = "login") {
+      document.getElementById("authModalBackdrop").classList.remove("hidden");
+      switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModalBackdrop").classList.add("hidden");
+    }
+
+    function switchAuthTab(tab) {
+      const loginTab = document.getElementById("authTabLogin");
+      const signupTab = document.getElementById("authTabSignup");
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+
+      if (tab === "login") {
+        loginTab.className = "text-lg font-black text-white border-b-2 border-[#00D632] pb-1";
+        signupTab.className = "text-lg font-black text-neutral-500 hover:text-white pb-1";
+        loginForm.classList.remove("hidden");
+        signupForm.classList.add("hidden");
+      } else {
+        signupTab.className = "text-lg font-black text-white border-b-2 border-[#00D632] pb-1";
+        loginTab.className = "text-lg font-black text-neutral-500 hover:text-white pb-1";
+        signupForm.classList.remove("hidden");
+        loginForm.classList.add("hidden");
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const errBox = document.getElementById("loginError");
+      errBox.classList.add("hidden");
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem("cashapp_auth_token", data.token);
+          // Redirect based on role
+          window.location.href = data.redirect || (['owner', 'admin', 'support'].includes(data.user.role) ? "/admin" : "/profile");
+        } else {
+          errBox.innerText = data.error || "Login failed";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error during login";
+        errBox.classList.remove("hidden");
+      }
+    }
+
+    let isSignupPasswordVisible = false;
+
+    function toggleSignupPasswordVisibility() {
+      const passInput = document.getElementById("signupPassword");
+      const eyeIcon = document.getElementById("eyeIcon");
+      isSignupPasswordVisible = !isSignupPasswordVisible;
+      passInput.type = isSignupPasswordVisible ? "text" : "password";
+
+      if (isSignupPasswordVisible) {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+        `;
+      } else {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        `;
+      }
+    }
+
+    function validateSignupName() {
+      const name = document.getElementById("signupName").value.trim();
+      const err = document.getElementById("nameError");
+      if (!name) {
+        err.innerText = "• Full name is required.";
+        err.classList.remove("hidden");
+        return false;
+      } else if (name.length < 2) {
+        err.innerText = "• Full name must be at least 2 characters.";
+        err.classList.remove("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      return true;
+    }
+
+    function validateSignupEmail() {
+      const email = document.getElementById("signupEmail").value.trim();
+      const err = document.getElementById("emailError");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email) {
+        err.innerText = "• Email address is required.";
+        err.classList.remove("hidden");
+        return false;
+      } else if (!emailRegex.test(email)) {
+        err.innerText = "• Please enter a valid email address.";
+        err.classList.remove("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      return true;
+    }
+
+    function validateSignupPassword() {
+      const pass = document.getElementById("signupPassword").value;
+      const err = document.getElementById("passwordError");
+      const hint = document.getElementById("passwordHint");
+      if (!pass) {
+        err.innerText = "• Password is required.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (pass.length < 8) {
+        err.innerText = "• Password must be at least 8 characters long.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[A-Z]/.test(pass)) {
+        err.innerText = "• Password must contain at least one uppercase letter.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[0-9]/.test(pass)) {
+        err.innerText = "• Password must contain at least one number.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(pass)) {
+        err.innerText = "• Password must contain at least one special character.";
+        err.classList.remove("hidden");
+        if (hint) hint.classList.add("hidden");
+        return false;
+      }
+      err.classList.add("hidden");
+      if (hint) hint.classList.remove("hidden");
+      return true;
+    }
+
+    async function handleSignupSubmit(e) {
+      e.preventDefault();
+      const banner = document.getElementById("signupErrorBanner");
+      const bannerMsg = document.getElementById("signupErrorMsg");
+      banner.classList.add("hidden");
+
+      const isNameValid = validateSignupName();
+      const isEmailValid = validateSignupEmail();
+      const isPasswordValid = validateSignupPassword();
+
+      if (!isNameValid || !isEmailValid || !isPasswordValid) {
+        return;
+      }
+
+      const agreed = document.getElementById("signupTermsCheckbox").checked;
+      if (!agreed) {
+        bannerMsg.innerText = "You must agree to the Terms and Conditions to proceed.";
+        banner.classList.remove("hidden");
+        return;
+      }
+
+      const name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value;
+
+      const submitBtn = document.getElementById("signupSubmitBtn");
+      const spinner = document.getElementById("signupBtnSpinner");
+      const btnText = document.getElementById("signupBtnText");
+
+      submitBtn.disabled = true;
+      spinner.classList.remove("hidden");
+      btnText.innerText = "Creating Account...";
+
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password, agreed_terms: true })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem("cashapp_auth_token", data.token);
+          window.location.href = "/profile";
+        } else {
+          bannerMsg.innerText = data.error || "Registration failed. Please try again.";
+          banner.classList.remove("hidden");
+        }
+      } catch (err) {
+        bannerMsg.innerText = "Network error during sign up. Please try again.";
+        banner.classList.remove("hidden");
+      } finally {
+        submitBtn.disabled = false;
+        spinner.classList.add("hidden");
+        btnText.innerText = "Create Account";
+      }
+    }
+  </script>
+</body>
+
+</html>

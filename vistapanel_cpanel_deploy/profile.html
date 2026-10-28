@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile • Cash App Lightning Pay</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0A0A0A;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glass-card {
+      background: rgba(22, 22, 22, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      background-color: #1F1F1F;
+      color: #00D632;
+      border-color: rgba(0, 214, 50, 0.4);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col selection:bg-[#00D632] selection:text-black">
+
+  <!-- Admin Impersonation Alert Banner -->
+  <div id="impersonationBanner" class="hidden bg-amber-500/15 border-b border-amber-500/40 px-4 py-2.5 text-amber-300 text-xs font-bold flex flex-col sm:flex-row items-center justify-between gap-2 z-50 sticky top-0">
+    <div class="flex items-center space-x-2">
+      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+      <span>👁️ Admin Impersonation Active: Viewing this user's profile with administrative controls.</span>
+    </div>
+    <a href="/admin" class="px-3 py-1 bg-amber-500 text-black text-[11px] rounded-lg hover:bg-amber-400 font-extrabold transition shrink-0">
+      ← Return to Admin Console
+    </a>
+  </div>
+
+  <!-- Top Navbar -->
+  <header class="w-full border-b border-neutral-800 bg-[#0F0F0F] sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="/assets/cashapp-logo.svg" alt="Cash App" class="w-9 h-9 rounded-xl shadow-lg shadow-emerald-500/20" />
+        <div>
+          <span class="text-base font-black text-white">Cash App <span class="text-[#00D632]">Pay</span></span>
+          <span class="text-xs text-neutral-400 block -mt-1 font-medium">Merchant Profile</span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div class="text-right hidden sm:block">
+          <p id="navUserName" class="text-xs font-bold text-white">Merchant</p>
+          <p id="navUserEmail" class="text-[10px] text-neutral-400 font-mono">user@cashapp.com</p>
+        </div>
+        <button onclick="handleLogout()"
+          class="text-xs font-bold text-neutral-400 hover:text-rose-400 px-3 py-1.5 rounded-xl border border-neutral-800 hover:bg-neutral-800 transition">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Profile View -->
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+    
+    <!-- Top Welcome Card -->
+    <div class="glass-card p-6 sm:p-8 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="space-y-2">
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[#00D632] text-xs font-bold">
+          <span>⚡ Lightning Network Payouts Active</span>
+        </div>
+        <h1 id="welcomeHeading" class="text-2xl sm:text-3xl font-black text-white">Welcome!</h1>
+        <p class="text-xs sm:text-sm text-neutral-400 max-w-xl">
+          Manage your personal profile information, date of birth, Satoshi wallet address, and Cash App payment pages.
+        </p>
+      </div>
+
+      <!-- Quick Action: Create Page -->
+      <button onclick="openCreatePageModal()"
+        class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-6 py-3.5 rounded-2xl text-xs sm:text-sm shadow-xl shadow-emerald-500/25 active:scale-95 transition flex items-center space-x-2 shrink-0">
+        <span class="text-base">+</span>
+        <span>Create Payment Page</span>
+      </button>
+    </div>
+
+    <!-- Navigation Tabs: Pages vs Profile Settings -->
+    <div class="flex space-x-2 border-b border-neutral-800 pb-3">
+      <button onclick="switchTab('pages')" id="tab-btn-pages"
+        class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-transparent transition flex items-center space-x-2">
+        <span>📄</span> <span>My Payment Pages</span>
+      </button>
+      <button onclick="switchTab('settings')" id="tab-btn-settings"
+        class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-neutral-400 hover:text-white border border-transparent transition flex items-center space-x-2">
+        <span>⚙️</span> <span>Profile Settings</span>
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: MY PAYMENT PAGES ==================== -->
+    <div id="tab-content-pages" class="space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-bold text-white">Active Payment Pages</h2>
+          <p class="text-xs text-neutral-400">Share your checkout links or embed buttons on your website.</p>
+        </div>
+        <button onclick="openCreatePageModal()" class="text-xs font-bold text-[#00D632] hover:underline">
+          + Add New Page
+        </button>
+      </div>
+
+      <!-- Pages Grid -->
+      <div id="pagesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: PROFILE SETTINGS ==================== -->
+    <div id="tab-content-settings" class="hidden space-y-6">
+      <div class="glass-card p-6 sm:p-8 rounded-3xl max-w-2xl">
+        <div class="border-b border-neutral-800 pb-4 mb-6">
+          <h2 class="text-xl font-bold text-white">Profile Settings</h2>
+          <p class="text-xs text-neutral-400">Update your name, email, date of birth, Satoshi wallet, or password.</p>
+        </div>
+
+        <form onsubmit="handleSaveProfileSettings(event)" class="space-y-5">
+          <!-- Full Name -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">Profile Name *</label>
+            <input type="text" id="settingsName" required placeholder="Your Full Name"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <!-- Email Address (Changeable) -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">Email Address *</label>
+            <input type="email" id="settingsEmail" required placeholder="you@merchant.com"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+            <p class="text-[11px] text-neutral-500 mt-1">Used for signing into your merchant profile.</p>
+          </div>
+
+          <!-- Date of Birth -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">Date of Birth</label>
+            <input type="date" id="settingsDob"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            <p class="text-[11px] text-neutral-500 mt-1">Your registered date of birth for merchant identity.</p>
+          </div>
+
+          <!-- Satoshi Wallet Address -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Default Satoshi Wallet Address (Lightning Address) *
+            </label>
+            <input type="text" id="settingsWallet" required placeholder="yourname@walletofsatoshi.com or blink.sv"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-[#00D632] font-mono focus:outline-none focus:border-[#00D632]" />
+            <p class="text-[11px] text-neutral-500 mt-1">Accepts Wallet of Satoshi, Blink, Alby, Cash App Lightning, etc.</p>
+          </div>
+
+          <!-- Password Update -->
+          <div class="pt-3 border-t border-neutral-800">
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Update Password (leave blank to keep current)
+            </label>
+            <input type="password" id="settingsPassword" placeholder="Enter new password (min 6 characters)" minlength="6"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <div class="pt-4 flex justify-end">
+            <button type="submit" id="saveProfileBtn"
+              class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 active:scale-95">
+              Save Profile Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: CREATE PAYMENT PAGE ==================== -->
+  <div id="pageModalBackdrop" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-[#141414] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-white shadow-2xl relative">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-xl font-black">Create Payment Page</h2>
+          <p class="text-xs text-neutral-400">Configure your Cash App Lightning checkout screen.</p>
+        </div>
+        <button onclick="closePageModal()" class="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="handleCreatePage(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Page Title *</label>
+          <input type="text" id="modalTitle" required placeholder="e.g. VIP Subscription or Donation"
+            oninput="autoSlug(this.value)"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">URL Slug *</label>
+            <div class="flex items-center bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2 text-xs font-mono text-neutral-400">
+              <span>/pay/</span>
+              <input type="text" id="modalSlug" required placeholder="vip-pay"
+                class="bg-transparent text-white focus:outline-none w-full ml-1" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Receiver Name on Badge *</label>
+            <input type="text" id="modalReceiver" required placeholder="e.g. Natasha Torres"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+        </div>
+
+        <!-- Satoshi Wallet Address for this page -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Satoshi Wallet Address (Lightning Address) *</label>
+          <input type="text" id="modalWallet" required placeholder="user@walletofsatoshi.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-emerald-400 font-mono focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <!-- Mode: Keypad vs Fixed -->
+        <div class="p-3 rounded-xl bg-neutral-900/80 border border-neutral-800 space-y-2">
+          <label class="block text-xs font-bold text-neutral-300">Amount Mode</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center space-x-2 cursor-pointer p-2 rounded-lg bg-neutral-950 border border-neutral-800">
+              <input type="radio" name="pageType" value="keypad" checked onchange="toggleFixed(false)" />
+              <span>📱 Custom Keypad</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer p-2 rounded-lg bg-neutral-950 border border-neutral-800">
+              <input type="radio" name="pageType" value="fixed" onchange="toggleFixed(true)" />
+              <span>🔒 Fixed Price ($)</span>
+            </label>
+          </div>
+
+          <div id="fixedAmountContainer" class="hidden pt-2">
+            <label class="block text-[11px] font-bold text-neutral-400 mb-1">Fixed USD Amount ($)</label>
+            <input type="number" step="0.01" id="modalFixedAmount" placeholder="10.00"
+              class="w-full bg-neutral-950 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Success Redirect URL (Optional)</label>
+          <input type="url" id="modalSuccessUrl" placeholder="https://yourwebsite.com/thank-you"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+        </div>
+
+        <div class="pt-4 flex justify-end space-x-3">
+          <button type="button" onclick="closePageModal()" class="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-bold">
+            Cancel
+          </button>
+          <button type="submit"
+            class="px-6 py-2.5 rounded-xl bg-[#00D632] hover:bg-[#00b82b] text-black text-xs font-extrabold shadow-lg shadow-emerald-500/20">
+            Create Page
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"
+    class="opacity-0 pointer-events-none fixed top-5 right-5 bg-neutral-900 border border-neutral-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-2xl z-50 transition-all">
+    <span id="toastMsg">Saved</span>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const impersonateToken = urlParams.get("impersonate_token");
+    if (impersonateToken) {
+      localStorage.setItem("cashapp_auth_token", impersonateToken);
+      sessionStorage.setItem("admin_impersonating", "true");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    let authToken = localStorage.getItem("cashapp_auth_token");
+    let currentUser = null;
+    let userPages = [];
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toastMsg").innerText = msg;
+      t.classList.remove("opacity-0", "pointer-events-none");
+      t.classList.add("opacity-100");
+      setTimeout(() => {
+        t.classList.remove("opacity-100");
+        t.classList.add("opacity-0", "pointer-events-none");
+      }, 2500);
+    }
+
+    function switchTab(tab) {
+      const pagesContent = document.getElementById("tab-content-pages");
+      const settingsContent = document.getElementById("tab-content-settings");
+      const btnPages = document.getElementById("tab-btn-pages");
+      const btnSettings = document.getElementById("tab-btn-settings");
+
+      if (tab === 'pages') {
+        pagesContent.classList.remove("hidden");
+        settingsContent.classList.add("hidden");
+        btnPages.className = "tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-transparent transition flex items-center space-x-2";
+        btnSettings.className = "tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-neutral-400 hover:text-white border border-transparent transition flex items-center space-x-2";
+      } else {
+        pagesContent.classList.add("hidden");
+        settingsContent.classList.remove("hidden");
+        btnSettings.className = "tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-transparent transition flex items-center space-x-2";
+        btnPages.className = "tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-neutral-400 hover:text-white border border-transparent transition flex items-center space-x-2";
+      }
+    }
+
+    async function initProfile() {
+      if (!authToken) {
+        window.location.href = "/?login=1";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (!json.success) {
+          localStorage.removeItem("cashapp_auth_token");
+          window.location.href = "/?login=1";
+          return;
+        }
+
+        currentUser = json.user;
+        renderUser();
+        await loadPages();
+      } catch (e) {
+        window.location.href = "/?login=1";
+      }
+    }
+
+    function renderUser() {
+      if (sessionStorage.getItem("admin_impersonating") === "true") {
+        const banner = document.getElementById("impersonationBanner");
+        if (banner) banner.classList.remove("hidden");
+      }
+      document.getElementById("navUserName").innerText = currentUser.name;
+      document.getElementById("navUserEmail").innerText = currentUser.email;
+      document.getElementById("welcomeHeading").innerText = `Welcome, ${currentUser.name}!`;
+
+      // Fill settings fields
+      document.getElementById("settingsName").value = currentUser.name || "";
+      document.getElementById("settingsEmail").value = currentUser.email || "";
+      document.getElementById("settingsDob").value = currentUser.dob || "";
+      document.getElementById("settingsWallet").value = currentUser.lightning_address || "";
+    }
+
+    async function handleSaveProfileSettings(e) {
+      e.preventDefault();
+      const btn = document.getElementById("saveProfileBtn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      const body = {
+        name: document.getElementById("settingsName").value,
+        email: document.getElementById("settingsEmail").value,
+        dob: document.getElementById("settingsDob").value,
+        lightning_address: document.getElementById("settingsWallet").value
+      };
+
+      const pass = document.getElementById("settingsPassword").value;
+      if (pass) body.password = pass;
+
+      try {
+        const res = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentUser = json.user;
+          renderUser();
+          document.getElementById("settingsPassword").value = "";
+          showToast("Profile settings updated successfully! ✓");
+        } else {
+          showToast(json.error || "Failed to update profile settings");
+        }
+      } catch (e) {
+        showToast("Network error saving profile");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Save Profile Changes";
+      }
+    }
+
+    async function loadPages() {
+      try {
+        const res = await fetch("/api/pages", {
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          userPages = json.pages || [];
+          renderPagesGrid();
+        }
+      } catch (e) { }
+    }
+
+    function renderPagesGrid() {
+      const grid = document.getElementById("pagesGrid");
+      if (userPages.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full p-8 text-center glass-card rounded-2xl">
+            <p class="text-neutral-400 text-sm mb-3">You don't have any payment pages created yet.</p>
+            <button onclick="openCreatePageModal()" class="px-5 py-2.5 bg-[#00D632] text-black font-extrabold rounded-xl text-xs">
+              + Create Your First Page
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const origin = window.location.origin;
+
+      grid.innerHTML = userPages.map(page => {
+        const pageUrl = `${origin}/pay/${page.slug}`;
+
+        return `
+          <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${page.type === 'fixed' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                  ${page.type === 'fixed' ? `$${parseFloat(page.fixed_amount).toFixed(2)} Fixed` : 'Keypad Custom'}
+                </span>
+                <span class="text-[10px] text-neutral-400 font-mono">⚡ Lightning</span>
+              </div>
+
+              <h3 class="text-base font-bold text-white mb-0.5 truncate">${page.title}</h3>
+              <p class="text-xs font-mono text-[#00D632] mb-3">/pay/${page.slug}</p>
+              
+              <p class="text-[11px] text-neutral-400 truncate mb-4">
+                <strong>Wallet:</strong> <span class="font-mono text-neutral-300">${page.custom_wallet || currentUser.lightning_address}</span>
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-800 space-y-2">
+              <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                <button onclick="copyLink('${pageUrl}')"
+                  class="bg-neutral-800 hover:bg-neutral-700 py-2 rounded-xl text-neutral-200 transition text-center flex items-center justify-center space-x-1">
+                  <span>🔗</span> <span>Copy Link</span>
+                </button>
+                <a href="/pay/${page.slug}" target="_blank"
+                  class="bg-[#00D632]/10 hover:bg-[#00D632]/20 text-[#00D632] py-2 rounded-xl text-center transition flex items-center justify-center space-x-1">
+                  <span>👁️</span> <span>Preview</span>
+                </a>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button onclick="deletePage('${page.id}')" class="text-xs text-neutral-500 hover:text-rose-400 font-medium">
+                  Delete Page ✕
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        showToast("Payment link copied! 📋");
+      });
+    }
+
+    function openCreatePageModal() {
+      document.getElementById("modalTitle").value = "";
+      document.getElementById("modalSlug").value = "";
+      document.getElementById("modalReceiver").value = currentUser ? currentUser.name : "";
+      document.getElementById("modalWallet").value = currentUser ? currentUser.lightning_address : "";
+      document.getElementById("modalSuccessUrl").value = "";
+      toggleFixed(false);
+      document.querySelector('input[name="pageType"][value="keypad"]').checked = true;
+      document.getElementById("pageModalBackdrop").classList.remove("hidden");
+    }
+
+    function closePageModal() {
+      document.getElementById("pageModalBackdrop").classList.add("hidden");
+    }
+
+    function toggleFixed(isFixed) {
+      const container = document.getElementById("fixedAmountContainer");
+      if (isFixed) {
+        container.classList.remove("hidden");
+      } else {
+        container.classList.add("hidden");
+      }
+    }
+
+    function autoSlug(val) {
+      const slug = val.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+      document.getElementById("modalSlug").value = slug;
+    }
+
+    async function handleCreatePage(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="pageType"]:checked').value;
+      const body = {
+        title: document.getElementById("modalTitle").value,
+        slug: document.getElementById("modalSlug").value,
+        receiver_name: document.getElementById("modalReceiver").value,
+        custom_wallet: document.getElementById("modalWallet").value,
+        type: type,
+        fixed_amount: type === "fixed" ? parseFloat(document.getElementById("modalFixedAmount").value) || 0 : 0,
+        success_url: document.getElementById("modalSuccessUrl").value
+      };
+
+      try {
+        const res = await fetch("/api/pages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Payment page created! ⚡");
+          closePageModal();
+          await loadPages();
+        } else {
+          showToast(json.error || "Failed to create page");
+        }
+      } catch (e) {
+        showToast("Error creating page");
+      }
+    }
+
+    async function deletePage(id) {
+      if (!confirm("Are you sure you want to delete this payment page?")) return;
+      try {
+        const res = await fetch(`/api/pages/${id}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Page deleted");
+          await loadPages();
+        }
+      } catch (e) { }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("cashapp_auth_token");
+      window.location.href = "/";
+    }
+
+    initProfile();
+  </script>
+</body>
+
+</html>

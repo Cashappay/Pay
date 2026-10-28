@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merchant Dashboard • Cash App Lightning Gateway</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0A0A0A;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #262626;
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00D632;
+    }
+
+    .cashapp-glow {
+      box-shadow: 0 0 25px rgba(0, 214, 50, 0.15);
+    }
+
+    .glass-panel {
+      background: rgba(23, 23, 23, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-btn.active {
+      background-color: #1A1A1A;
+      color: #00D632;
+      border-color: rgba(0, 214, 50, 0.3);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#00D632] selection:text-black">
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#0F0F0F] border-b md:border-b-0 md:border-r border-neutral-800 shrink-0 flex flex-col justify-between z-30">
+    <div>
+      <!-- Brand Logo Header -->
+      <div class="p-5 flex items-center justify-between border-b border-neutral-800/80">
+        <a href="/admin" class="flex items-center space-x-3">
+          <img src="/assets/cashapp-logo.svg" alt="Cash App Logo" class="w-9 h-9 rounded-xl shadow-lg shadow-emerald-500/20" />
+          <div>
+            <div class="text-base font-extrabold tracking-tight text-white flex items-center space-x-1">
+              <span>Cash App</span>
+              <span class="text-[#00D632]">Pay</span>
+            </div>
+            <p class="text-[10px] text-neutral-400 font-medium">Lightning Gateway</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-3 space-y-1">
+        <button onclick="switchTab('overview')" id="nav-overview"
+          class="nav-btn active w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span>Overview</span>
+        </button>
+
+        <button onclick="switchTab('pages')" id="nav-pages"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Payment Pages</span>
+        </button>
+
+        <button onclick="switchTab('transactions')" id="nav-transactions"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>Transactions</span>
+        </button>
+
+        <button onclick="switchTab('webhooks')" id="nav-webhooks"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition border border-transparent">
+          <svg class="w-4 h-4 text-[#00D632]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span>Webhooks & Dev</span>
+        </button>
+
+        <button onclick="switchTab('settings')" id="nav-settings"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800/60 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User Profile Footer & Logout -->
+    <div class="p-4 border-t border-neutral-800 bg-[#0C0C0C]">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-full bg-[#00D632]/20 border border-[#00D632]/40 text-[#00D632] flex items-center justify-center font-bold text-xs shrink-0">
+            <span id="userAvatar">U</span>
+          </div>
+          <div class="min-w-0">
+            <p id="profileName" class="text-xs font-bold text-white truncate">Merchant</p>
+            <p id="profileEmail" class="text-[10px] text-neutral-400 font-mono truncate">demo@cashapp.com</p>
+          </div>
+        </div>
+        <button onclick="handleLogout()" title="Log Out"
+          class="text-neutral-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-neutral-800 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
+
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div>
+        <h1 id="pageHeading" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Merchant Overview</h1>
+        <p id="pageSubheading" class="text-xs sm:text-sm text-neutral-400 mt-1">Real-time Cash App Lightning gateway performance and controls.</p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- Live Lightning Status Indicator -->
+        <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-[#171717] border border-neutral-800">
+          <span class="w-2 h-2 rounded-full bg-[#00D632] animate-pulse"></span>
+          <span class="text-xs font-bold text-neutral-300">Lightning ⚡ Connected</span>
+        </div>
+
+        <button onclick="openCreatePageModal()"
+          class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-4 py-2 rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center space-x-1.5">
+          <span>+ Create Payment Page</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <div id="tab-overview" class="tab-content space-y-6">
+      <!-- 4 Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Volume -->
+        <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between text-neutral-400 text-xs font-semibold mb-2">
+            <span>Total Volume</span>
+            <span class="p-1.5 bg-[#00D632]/10 text-[#00D632] rounded-lg">💵</span>
+          </div>
+          <div id="statTotalUsd" class="text-2xl sm:text-3xl font-black text-white">$0.00</div>
+          <p id="statTotalSats" class="text-xs font-mono text-emerald-400 mt-1">0 Sats settled</p>
+        </div>
+
+        <!-- Card 2: Transactions -->
+        <div class="glass-panel p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-neutral-400 text-xs font-semibold mb-2">
+            <span>Successful Payments</span>
+            <span class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg">⚡</span>
+          </div>
+          <div id="statCompletedCount" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p id="statTotalCount" class="text-xs text-neutral-400 mt-1">0 total created</p>
+        </div>
+
+        <!-- Card 3: Active Pages -->
+        <div class="glass-panel p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-neutral-400 text-xs font-semibold mb-2">
+            <span>Active Payment Pages</span>
+            <span class="p-1.5 bg-amber-500/10 text-amber-400 rounded-lg">📄</span>
+          </div>
+          <div id="statActivePages" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p class="text-xs text-neutral-400 mt-1">Ready to accept payments</p>
+        </div>
+
+        <!-- Card 4: Webhook Status -->
+        <div class="glass-panel p-5 rounded-2xl">
+          <div class="flex items-center justify-between text-neutral-400 text-xs font-semibold mb-2">
+            <span>Webhook Health</span>
+            <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">🔗</span>
+          </div>
+          <div id="statWebhookHealth" class="text-xl sm:text-2xl font-black text-white truncate">Active</div>
+          <button onclick="switchTab('webhooks')" class="text-xs text-[#00D632] hover:underline font-semibold mt-1 block">
+            Test endpoint & view logs →
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div onclick="openCreatePageModal()"
+          class="glass-panel p-5 rounded-2xl hover:border-[#00D632]/50 cursor-pointer transition group">
+          <div class="w-10 h-10 rounded-xl bg-[#00D632]/10 text-[#00D632] flex items-center justify-center font-bold text-lg mb-3 group-hover:scale-110 transition">
+            +
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">New Payment Page</h3>
+          <p class="text-xs text-neutral-400">Generate a branded Cash App keypad or fixed price page in seconds.</p>
+        </div>
+
+        <div onclick="switchTab('webhooks')"
+          class="glass-panel p-5 rounded-2xl hover:border-[#00D632]/50 cursor-pointer transition group">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-lg mb-3 group-hover:scale-110 transition">
+            ⚡
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">Developer Webhooks</h3>
+          <p class="text-xs text-neutral-400">Dispatch HMAC-signed notifications straight to your WordPress, Node or PHP store.</p>
+        </div>
+
+        <div onclick="switchTab('settings')"
+          class="glass-panel p-5 rounded-2xl hover:border-[#00D632]/50 cursor-pointer transition group">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg mb-3 group-hover:scale-110 transition">
+            💼
+          </div>
+          <h3 class="text-base font-bold text-white mb-1">Payout Lightning Address</h3>
+          <p class="text-xs text-neutral-400">Direct wallet payout to Wallet of Satoshi, Blink, Alby or Cash App address.</p>
+        </div>
+      </div>
+
+      <!-- Recent Transactions Table Preview -->
+      <div class="glass-panel rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-white">Recent Transactions</h2>
+          <button onclick="switchTab('transactions')" class="text-xs font-bold text-[#00D632] hover:underline">
+            View All →
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800">
+              <tr>
+                <th class="pb-3 font-semibold">Payment ID</th>
+                <th class="pb-3 font-semibold">Page / Purpose</th>
+                <th class="pb-3 font-semibold">Amount (USD)</th>
+                <th class="pb-3 font-semibold">Satoshis</th>
+                <th class="pb-3 font-semibold">Status</th>
+                <th class="pb-3 font-semibold">Webhook</th>
+                <th class="pb-3 font-semibold text-right">Time</th>
+              </tr>
+            </thead>
+            <tbody id="overviewRecentTbody" class="divide-y divide-neutral-800/60 font-mono">
+              <tr>
+                <td colspan="7" class="py-6 text-center text-neutral-500 font-sans">Loading recent payments...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: PAYMENT PAGES ==================== -->
+    <div id="tab-pages" class="tab-content hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold text-white">Payment Pages</h2>
+          <p class="text-xs text-neutral-400">Manage all your Cash App payment pages, slugs, and embed links.</p>
+        </div>
+        <button onclick="openCreatePageModal()"
+          class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-4 py-2 rounded-xl text-xs sm:text-sm transition flex items-center space-x-1.5">
+          <span>+ Create New Page</span>
+        </button>
+      </div>
+
+      <!-- Payment Pages Grid -->
+      <div id="pagesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: TRANSACTIONS ==================== -->
+    <div id="tab-transactions" class="tab-content hidden space-y-6">
+      <div class="glass-panel p-6 rounded-2xl">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">Transactions Ledger</h2>
+            <p class="text-xs text-neutral-400">Detailed records of all Lightning invoices and settled Cash App payments.</p>
+          </div>
+
+          <!-- Filter Controls -->
+          <div class="flex items-center space-x-2">
+            <select id="txStatusFilter" onchange="renderTransactionsTable()"
+              class="bg-neutral-900 border border-neutral-700 text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#00D632]">
+              <option value="ALL">All Statuses</option>
+              <option value="COMPLETED">Completed Only</option>
+              <option value="PENDING">Pending Invoices</option>
+            </select>
+            <button onclick="loadDashboardData()" class="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-neutral-300 transition" title="Refresh">
+              🔄
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800">
+              <tr>
+                <th class="pb-3 font-semibold">Payment ID</th>
+                <th class="pb-3 font-semibold">Page Slug</th>
+                <th class="pb-3 font-semibold">Amount</th>
+                <th class="pb-3 font-semibold">Satoshis</th>
+                <th class="pb-3 font-semibold">Status</th>
+                <th class="pb-3 font-semibold">Webhook</th>
+                <th class="pb-3 font-semibold">Timestamp</th>
+                <th class="pb-3 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="fullTransactionsTbody" class="divide-y divide-neutral-800/60 font-mono">
+              <tr>
+                <td colspan="8" class="py-8 text-center text-neutral-500 font-sans">No transactions yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: WEBHOOKS & DEVELOPERS ==================== -->
+    <div id="tab-webhooks" class="tab-content hidden space-y-6">
+      <!-- Webhook Configuration Box -->
+      <div class="glass-panel p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Webhook Configuration</h2>
+        <p class="text-xs text-neutral-400 mb-6">
+          Receive real-time signed HTTP POST notifications whenever a customer pays with Cash App.
+        </p>
+
+        <div class="space-y-4 max-w-2xl">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">Your Website Webhook Endpoint URL</label>
+            <div class="flex space-x-2">
+              <input type="url" id="webhookUrlInput" placeholder="https://yourwebsite.com/api/cashapp-webhook"
+                class="flex-1 bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+              <button onclick="saveWebhookSettings()"
+                class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-5 py-2.5 rounded-xl text-xs transition">
+                Save URL
+              </button>
+            </div>
+            <p class="text-[11px] text-neutral-500 mt-1">Accepts HTTPS endpoints from WordPress, WooCommerce, PHP, Node.js, Python, Shopify, etc.</p>
+          </div>
+
+          <!-- Webhook Secret & Live Test Runner -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-neutral-300 mb-1.5">Webhook HMAC Secret</label>
+              <div class="flex items-center space-x-2">
+                <input type="text" id="webhookSecretDisplay" readonly
+                  class="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-amber-400 font-mono select-all" />
+                <button onclick="copyWebhookSecret()"
+                  class="bg-neutral-800 hover:bg-neutral-700 text-white font-bold px-3 py-2 rounded-xl text-xs transition">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-end">
+              <button onclick="triggerTestWebhook()" id="testWebhookBtn"
+                class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2">
+                <span>⚡ Send Test Webhook Ping</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Test Webhook Result Console -->
+          <div id="testWebhookResult" class="hidden mt-4 p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-xs font-mono">
+            <!-- Rendered after test -->
+          </div>
+        </div>
+      </div>
+
+      <!-- API Keys & Credentials -->
+      <div class="glass-panel p-6 rounded-2xl">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">API Authentication Keys</h3>
+            <p class="text-xs text-neutral-400">Use these keys to programmatically create checkout sessions from your backend.</p>
+          </div>
+          <button onclick="regenerateApiKeys()"
+            class="text-xs text-rose-400 hover:text-rose-300 border border-rose-500/30 px-3 py-1.5 rounded-xl hover:bg-rose-500/10 transition">
+            Regenerate Keys
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+          <div>
+            <span class="block text-neutral-400 text-[10px] uppercase font-bold mb-1">Public Key (Client-side)</span>
+            <input type="text" id="apiKeyPublic" readonly class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-neutral-300 select-all" />
+          </div>
+          <div>
+            <span class="block text-neutral-400 text-[10px] uppercase font-bold mb-1">Secret Key (Server-side)</span>
+            <input type="text" id="apiKeySecret" readonly class="w-full bg-neutral-950 border border-neutral-800 p-2.5 rounded-xl text-neutral-300 select-all" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Developer Accurate Verification Code Samples -->
+      <div class="glass-panel p-6 rounded-2xl">
+        <h3 class="text-base font-bold text-white mb-2">Accurate Webhook Verification Guide</h3>
+        <p class="text-xs text-neutral-400 mb-4">
+          Every webhook includes the <code class="text-[#00D632]">X-CashApp-Signature</code> header:
+          <code class="text-neutral-300">t=timestamp,v1=sha256_hmac</code>. Verify it to ensure payments cannot be spoofed!
+        </p>
+
+        <!-- Code Tabs -->
+        <div class="flex space-x-2 border-b border-neutral-800 pb-2 mb-4 text-xs font-semibold">
+          <button onclick="switchCodeTab('php')" id="code-tab-php" class="px-3 py-1 rounded-lg bg-neutral-800 text-[#00D632]">PHP / WordPress</button>
+          <button onclick="switchCodeTab('node')" id="code-tab-node" class="px-3 py-1 rounded-lg text-neutral-400 hover:text-white">Node.js (Express)</button>
+          <button onclick="switchCodeTab('python')" id="code-tab-python" class="px-3 py-1 rounded-lg text-neutral-400 hover:text-white">Python</button>
+        </div>
+
+        <!-- PHP Snippet -->
+        <div id="code-php" class="code-snippet font-mono text-xs bg-neutral-950 p-4 rounded-xl border border-neutral-800 text-neutral-300 overflow-x-auto">
+<pre>&lt;?php
+// verify-cashapp-webhook.php
+$webhookSecret = 'YOUR_WEBHOOK_SECRET'; // whsec_...
+
+$payload = file_get_contents('php://input');
+$sigHeader = $_SERVER['HTTP_X_CASHAPP_SIGNATURE'] ?? '';
+
+// Parse header: t=1793218000,v1=9f83ab...
+parse_str(str_replace(',', '&', $sigHeader), $sigParts);
+$timestamp = $sigParts['t'] ?? '';
+$signature = $sigParts['v1'] ?? '';
+
+// Recompute HMAC-SHA256
+$expected = hash_hmac('sha256', "{$timestamp}.{$payload}", $webhookSecret);
+
+if (hash_equals($expected, $signature)) {
+    $event = json_decode($payload, true);
+    if ($event['event'] === 'payment.completed') {
+        $paymentId = $event['data']['payment_id'];
+        $amountUsd = $event['data']['amount_usd'];
+        // Mark order as PAID in your database!
+    }
+    http_response_code(200);
+    echo json_encode(['received' => true]);
+} else {
+    http_response_code(400);
+    echo 'Invalid signature verification';
+}
+?&gt;</pre>
+        </div>
+
+        <!-- Node.js Snippet -->
+        <div id="code-node" class="code-snippet hidden font-mono text-xs bg-neutral-950 p-4 rounded-xl border border-neutral-800 text-neutral-300 overflow-x-auto">
+<pre>const crypto = require('crypto');
+
+app.post('/api/cashapp-webhook', (req, res) => {
+  const secret = process.env.CASHAPP_WEBHOOK_SECRET;
+  const sigHeader = req.headers['x-cashapp-signature'];
+  const rawBody = JSON.stringify(req.body);
+
+  const parts = Object.fromEntries(sigHeader.split(',').map(s => s.split('=')));
+  const timestamp = parts.t;
+  const signature = parts.v1;
+
+  const expected = crypto.createHmac('sha256', secret)
+    .update(`${timestamp}.${rawBody}`)
+    .digest('hex');
+
+  if (signature === expected) {
+    const { event, data } = req.body;
+    if (event === 'payment.completed') {
+      console.log(`Payment confirmed: $${data.amount_usd} (${data.amount_sats} Sats)`);
+      // Update your database order status to completed
+    }
+    return res.status(200).json({ received: true });
+  }
+
+  return res.status(400).send('Invalid signature');
+});</pre>
+        </div>
+
+        <!-- Python Snippet -->
+        <div id="code-python" class="code-snippet hidden font-mono text-xs bg-neutral-950 p-4 rounded-xl border border-neutral-800 text-neutral-300 overflow-x-auto">
+<pre>import hmac, hashlib
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+WEBHOOK_SECRET = "YOUR_WEBHOOK_SECRET"
+
+@app.route('/api/cashapp-webhook', methods=['POST'])
+def cashapp_webhook():
+    sig_header = request.headers.get('X-CashApp-Signature', '')
+    parts = dict(x.split('=') for x in sig_header.split(','))
+    timestamp, signature = parts.get('t'), parts.get('v1')
+    
+    signed_payload = f"{timestamp}.{request.get_data(as_text=True)}".encode('utf-8')
+    expected = hmac.new(WEBHOOK_SECRET.encode(), signed_payload, hashlib.sha256).hexdigest()
+    
+    if hmac.compare_digest(signature, expected):
+        data = request.json
+        if data.get('event') == 'payment.completed':
+            print("Verified Cash App payment:", data['data']['amount_usd'])
+        return jsonify(received=True), 200
+        
+    return "Invalid signature", 400</pre>
+        </div>
+      </div>
+
+      <!-- Webhook Delivery Logs Table -->
+      <div class="glass-panel p-6 rounded-2xl">
+        <h3 class="text-base font-bold text-white mb-4">Webhook Delivery History</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Event</th>
+                <th class="pb-3">Target Endpoint</th>
+                <th class="pb-3">Status Code</th>
+                <th class="pb-3">Latency</th>
+                <th class="pb-3">Time</th>
+              </tr>
+            </thead>
+            <tbody id="webhookLogsTbody" class="divide-y divide-neutral-800/60 font-mono">
+              <tr>
+                <td colspan="5" class="py-6 text-center text-neutral-500 font-sans">No webhook deliveries yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: SETTINGS ==================== -->
+    <div id="tab-settings" class="tab-content hidden space-y-6">
+      <div class="glass-panel p-6 rounded-2xl max-w-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Merchant Profile & Payout Settings</h2>
+        <p class="text-xs text-neutral-400 mb-6">Configure where your funds go and backend Telegram notifications.</p>
+
+        <form onsubmit="handleSaveProfile(event)" class="space-y-5">
+          <!-- Business Name -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">Business / Display Name</label>
+            <input type="text" id="settingsName" required
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <!-- Lightning Address -->
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Lightning Payout Address <span class="text-[#00D632]">*</span>
+            </label>
+            <input type="text" id="settingsLightningAddress" required placeholder="user@walletofsatoshi.com or user@blink.sv"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            <p class="text-[11px] text-neutral-500 mt-1">
+              Payments from customers are sent directly to this Lightning address (Wallet of Satoshi, Blink, Cash App Lightning, Alby, etc.).
+            </p>
+          </div>
+
+          <!-- Telegram Bot Settings (Backend Protected) -->
+          <div class="pt-2 border-t border-neutral-800">
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="text-sm">🔔</span>
+              <h3 class="text-xs font-bold text-white uppercase tracking-wider">Private Backend Telegram Alerts</h3>
+            </div>
+            <p class="text-[11px] text-neutral-400 mb-3">
+              Kept strictly server-side. Customer browsers and WebViews never see your Bot Token or Chat ID.
+            </p>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs text-neutral-400 mb-1">Telegram Bot Token (Optional)</label>
+                <input type="text" id="settingsTelegramToken" placeholder="8778648114:AAEgz..."
+                  class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+              </div>
+              <div>
+                <label class="block text-xs text-neutral-400 mb-1">Telegram Chat ID (Optional)</label>
+                <input type="text" id="settingsTelegramChatId" placeholder="-1004437748729"
+                  class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+              </div>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div class="pt-2 border-t border-neutral-800">
+            <label class="block text-xs text-neutral-400 mb-1">Change Password (leave blank to keep current)</label>
+            <input type="password" id="settingsNewPassword" placeholder="••••••••"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <button type="submit" id="saveProfileBtn"
+            class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20">
+            Save Settings
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Create / Edit Payment Page -->
+  <div id="pageModalBackdrop" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-[#141414] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-white shadow-2xl relative">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 id="pageModalTitle" class="text-xl font-black">Create Payment Page</h2>
+          <p class="text-xs text-neutral-400">Configure your Cash App Lightning checkout screen.</p>
+        </div>
+        <button onclick="closePageModal()" class="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white">✕</button>
+      </div>
+
+      <form onsubmit="handleSavePage(event)" class="space-y-4">
+        <input type="hidden" id="modalPageId" value="" />
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Page Title *</label>
+          <input type="text" id="modalPageTitleInput" required placeholder="e.g. VIP Subscription or Donation"
+            oninput="autoGenerateSlug(this.value)"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">URL Slug *</label>
+            <div class="flex items-center bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2 text-xs font-mono text-neutral-400">
+              <span>/pay/</span>
+              <input type="text" id="modalSlugInput" required placeholder="vip-checkout"
+                class="bg-transparent text-white focus:outline-none w-full ml-1" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Receiver Name on Badge *</label>
+            <input type="text" id="modalReceiverInput" required placeholder="e.g. Natasha Torres"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+        </div>
+
+        <!-- Mode: Custom Keypad vs Fixed -->
+        <div class="p-3 rounded-xl bg-neutral-900/80 border border-neutral-800 space-y-2">
+          <label class="block text-xs font-bold text-neutral-300">Amount Mode</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center space-x-2 cursor-pointer p-2 rounded-lg bg-neutral-950 border border-neutral-800">
+              <input type="radio" name="pageType" value="keypad" checked onchange="toggleFixedInput(false)" />
+              <span>📱 Custom Keypad</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer p-2 rounded-lg bg-neutral-950 border border-neutral-800">
+              <input type="radio" name="pageType" value="fixed" onchange="toggleFixedInput(true)" />
+              <span>🔒 Fixed Price ($)</span>
+            </label>
+          </div>
+
+          <div id="fixedAmountContainer" class="hidden pt-2">
+            <label class="block text-[11px] font-bold text-neutral-400 mb-1">Fixed USD Amount ($)</label>
+            <input type="number" step="0.01" id="modalFixedAmountInput" placeholder="10.00"
+              class="w-full bg-neutral-950 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Success Redirect URL (Optional)</label>
+          <input type="url" id="modalSuccessUrlInput" placeholder="https://yourwebsite.com/order-success"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          <p class="text-[10px] text-neutral-500 mt-1">Customers will automatically be redirected here upon payment.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Page Description / Note (Optional)</label>
+          <input type="text" id="modalDescriptionInput" placeholder="Brief note displayed on the checkout screen"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="modalVerifiedInput" checked class="rounded accent-[#00D632]" />
+          <label for="modalVerifiedInput" class="text-xs text-neutral-300 cursor-pointer">
+            Display <span class="text-[#00D632] font-bold">✓ Verified</span> badge on payment page
+          </label>
+        </div>
+
+        <div class="pt-4 flex justify-end space-x-3">
+          <button type="button" onclick="closePageModal()" class="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-bold">
+            Cancel
+          </button>
+          <button type="submit" id="savePageBtn"
+            class="px-6 py-2.5 rounded-xl bg-[#00D632] hover:bg-[#00b82b] text-black text-xs font-extrabold shadow-lg shadow-emerald-500/20">
+            Save Page
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Embed & Webview Code Generator -->
+  <div id="embedModalBackdrop" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-[#141414] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white shadow-2xl relative">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-xl font-black">Embed & Webview Integration</h2>
+          <p id="embedPageTitle" class="text-xs text-neutral-400">Copy snippets for your website or mobile app.</p>
+        </div>
+        <button onclick="closeEmbedModal()" class="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Direct Link -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Direct Checkout Link</label>
+          <div class="flex space-x-2">
+            <input type="text" id="embedDirectLink" readonly class="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono select-all text-neutral-300" />
+            <button onclick="copySnippet('embedDirectLink')" class="bg-neutral-800 hover:bg-neutral-700 px-3 py-2 rounded-xl text-xs font-bold">Copy</button>
+          </div>
+        </div>
+
+        <!-- Cash App Pay Button HTML -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Pay with Cash App Button (HTML)</label>
+          <textarea id="embedButtonCode" rows="3" readonly class="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-xs font-mono text-emerald-400 select-all"></textarea>
+          <button onclick="copySnippet('embedButtonCode')" class="mt-1 text-xs text-[#00D632] hover:underline font-bold">Copy Button Code</button>
+        </div>
+
+        <!-- Responsive Iframe -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Embedded Iframe</label>
+          <textarea id="embedIframeCode" rows="2" readonly class="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-xs font-mono text-neutral-300 select-all"></textarea>
+          <button onclick="copySnippet('embedIframeCode')" class="mt-1 text-xs text-[#00D632] hover:underline font-bold">Copy Iframe Code</button>
+        </div>
+
+        <!-- Webview Tip -->
+        <div class="p-3 bg-neutral-900 rounded-xl border border-neutral-800 text-[11px] text-neutral-400 space-y-1">
+          <p class="font-bold text-white flex items-center space-x-1">
+            <span>📱</span> <span>Mobile WebView Guide</span>
+          </p>
+          <p>
+            When embedding inside an Android WebView or iOS WKWebView, ensure custom schemes (<code class="text-[#00D632]">intent:</code>, <code class="text-[#00D632]">lightning:</code>, <code class="text-[#00D632]">squarecash:</code>) are allowed or let the page fallback to clipboard copy & QR view.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast"
+    class="opacity-0 pointer-events-none fixed top-5 right-5 bg-neutral-900 border border-neutral-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-2xl z-50 transition-all flex items-center space-x-2">
+    <span id="toastIcon">✓</span>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <!-- Dashboard JavaScript Application Logic -->
+  <script>
+    let currentUser = null;
+    let userPages = [];
+    let userPayments = [];
+    let authToken = localStorage.getItem("cashapp_auth_token");
+
+    function showToast(msg, icon = "✓") {
+      const t = document.getElementById("toast");
+      document.getElementById("toastMsg").innerText = msg;
+      document.getElementById("toastIcon").innerText = icon;
+      t.classList.remove("opacity-0", "pointer-events-none");
+      t.classList.add("opacity-100");
+      setTimeout(() => {
+        t.classList.remove("opacity-100");
+        t.classList.add("opacity-0", "pointer-events-none");
+      }, 2600);
+    }
+
+    // Check auth on load
+    async function initDashboard() {
+      if (!authToken) {
+        window.location.href = "/?login=1";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (!data.success) {
+          localStorage.removeItem("cashapp_auth_token");
+          window.location.href = "/?login=1";
+          return;
+        }
+
+        currentUser = data.user;
+        renderUserProfile();
+        await loadDashboardData();
+      } catch (err) {
+        console.error("Auth verification failed:", err);
+      }
+    }
+
+    function renderUserProfile() {
+      if (!currentUser) return;
+      document.getElementById("profileName").innerText = currentUser.name;
+      document.getElementById("profileEmail").innerText = currentUser.email;
+      document.getElementById("userAvatar").innerText = currentUser.name.charAt(0).toUpperCase();
+
+      // Settings inputs
+      document.getElementById("settingsName").value = currentUser.name || "";
+      document.getElementById("settingsLightningAddress").value = currentUser.lightning_address || "";
+      document.getElementById("settingsTelegramToken").value = currentUser.telegram_bot_token || "";
+      document.getElementById("settingsTelegramChatId").value = currentUser.telegram_chat_id || "";
+
+      // Webhook inputs
+      document.getElementById("webhookUrlInput").value = currentUser.webhook_url || "";
+      document.getElementById("webhookSecretDisplay").value = currentUser.webhook_secret || "";
+      document.getElementById("apiKeyPublic").value = currentUser.api_key_public || "";
+      document.getElementById("apiKeySecret").value = currentUser.api_key_secret || "";
+    }
+
+    async function loadDashboardData() {
+      try {
+        const [pagesRes, txRes, logsRes] = await Promise.all([
+          fetch("/api/pages", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/transactions", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/transactions/webhooks/logs", { headers: { "Authorization": `Bearer ${authToken}` } })
+        ]);
+
+        const pagesData = await pagesRes.json();
+        const txData = await txRes.json();
+        const logsData = await logsRes.json();
+
+        if (pagesData.success) userPages = pagesData.pages || [];
+        if (txData.success) userPayments = txData.payments || [];
+
+        renderOverviewStats();
+        renderPaymentPages();
+        renderTransactionsTable();
+        if (logsData.success) renderWebhookLogs(logsData.logs || []);
+      } catch (e) {
+        console.error("Failed to load dashboard data:", e);
+      }
+    }
+
+    function renderOverviewStats() {
+      const completed = userPayments.filter(p => p.status === "COMPLETED");
+      const totalUsd = completed.reduce((sum, p) => sum + (parseFloat(p.amount_usd) || 0), 0);
+      const totalSats = completed.reduce((sum, p) => sum + (parseInt(p.amount_sats) || 0), 0);
+
+      document.getElementById("statTotalUsd").innerText = `$${totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById("statTotalSats").innerText = `${totalSats.toLocaleString()} Sats settled`;
+      document.getElementById("statCompletedCount").innerText = completed.length;
+      document.getElementById("statTotalCount").innerText = `${userPayments.length} total generated`;
+
+      const activePages = userPages.filter(p => p.is_active);
+      document.getElementById("statActivePages").innerText = activePages.length;
+
+      document.getElementById("statWebhookHealth").innerText = currentUser.webhook_url ? "Configured" : "Not Set";
+
+      // Recent 5 transactions on overview
+      const overviewTbody = document.getElementById("overviewRecentTbody");
+      if (userPayments.length === 0) {
+        overviewTbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-neutral-500 font-sans">No transactions recorded yet.</td></tr>`;
+        return;
+      }
+
+      overviewTbody.innerHTML = userPayments.slice(0, 5).map(p => `
+        <tr class="hover:bg-neutral-800/30 transition">
+          <td class="py-3 font-mono font-bold text-neutral-300">${p.id}</td>
+          <td class="py-3 font-sans text-white">${p.page_title || p.slug}</td>
+          <td class="py-3 font-bold text-white">$${parseFloat(p.amount_usd).toFixed(2)}</td>
+          <td class="py-3 text-amber-400 font-mono">${(p.amount_sats || 0).toLocaleString()} Sats</td>
+          <td class="py-3 font-sans">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              p.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'
+            }">${p.status}</span>
+          </td>
+          <td class="py-3 font-sans">
+            <span class="text-[10px] ${p.webhook_status === 'DELIVERED' ? 'text-emerald-400' : 'text-neutral-500'}">
+              ${p.webhook_status || 'NONE'}
+            </span>
+          </td>
+          <td class="py-3 text-right text-neutral-400">${new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderPaymentPages() {
+      const grid = document.getElementById("pagesGrid");
+      if (userPages.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full p-8 text-center glass-panel rounded-2xl">
+            <p class="text-neutral-400 text-sm mb-3">You don't have any payment pages created yet.</p>
+            <button onclick="openCreatePageModal()" class="px-4 py-2 bg-[#00D632] text-black font-extrabold rounded-xl text-xs">
+              + Create Your First Page
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const origin = window.location.origin;
+
+      grid.innerHTML = userPages.map(page => {
+        const pageUrl = `${origin}/pay/${page.slug}`;
+        const totalCollected = page.stats ? `$${page.stats.total_usd}` : "$0.00";
+        const txCount = page.stats ? page.stats.completed_transactions : 0;
+
+        return `
+          <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between border ${page.is_active ? 'border-neutral-800' : 'border-neutral-800 opacity-60'}">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${page.type === 'fixed' ? 'bg-purple-500/20 text-purple-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                  ${page.type === 'fixed' ? `$${parseFloat(page.fixed_amount).toFixed(2)} Fixed` : 'Keypad Custom'}
+                </span>
+                
+                <!-- Active Toggle Switch -->
+                <button onclick="togglePageActive('${page.id}')" title="Toggle Active"
+                  class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${page.is_active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-neutral-800 text-neutral-500'}">
+                  ${page.is_active ? '● Active' : '○ Paused'}
+                </button>
+              </div>
+
+              <h3 class="text-base font-bold text-white mb-0.5 truncate">${page.title}</h3>
+              <p class="text-xs font-mono text-[#00D632] mb-3">/pay/${page.slug}</p>
+
+              <!-- Stats Pill -->
+              <div class="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-neutral-900/80 text-xs mb-4">
+                <div>
+                  <span class="text-neutral-500 text-[10px] block">Revenue</span>
+                  <span class="font-bold text-white">${totalCollected}</span>
+                </div>
+                <div>
+                  <span class="text-neutral-500 text-[10px] block">Paid Tx</span>
+                  <span class="font-bold text-white">${txCount}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page Actions -->
+            <div class="space-y-2 pt-2 border-t border-neutral-800/80">
+              <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                <button onclick="copyToClipboard('${pageUrl}', 'Payment link copied!')"
+                  class="bg-neutral-800 hover:bg-neutral-700 py-2 rounded-xl text-neutral-200 transition text-center flex items-center justify-center space-x-1">
+                  <span>🔗</span> <span>Copy Link</span>
+                </button>
+                <a href="/pay/${page.slug}" target="_blank"
+                  class="bg-[#00D632]/10 hover:bg-[#00D632]/20 text-[#00D632] py-2 rounded-xl text-center transition flex items-center justify-center space-x-1">
+                  <span>👁️</span> <span>Preview</span>
+                </a>
+              </div>
+
+              <div class="flex items-center justify-between text-xs pt-1 text-neutral-400">
+                <button onclick="openEmbedModal('${page.id}')" class="hover:text-white transition flex items-center space-x-1">
+                  <span>🧩</span> <span>Get Embed Code</span>
+                </button>
+                <div class="space-x-2">
+                  <button onclick="openEditPageModal('${page.id}')" class="hover:text-sky-400">Edit</button>
+                  <span class="text-neutral-700">•</span>
+                  <button onclick="deletePage('${page.id}')" class="hover:text-rose-400">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTransactionsTable() {
+      const tbody = document.getElementById("fullTransactionsTbody");
+      const filter = document.getElementById("txStatusFilter").value;
+
+      let list = userPayments;
+      if (filter !== "ALL") {
+        list = list.filter(p => p.status === filter);
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-neutral-500 font-sans">No matching transactions found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => `
+        <tr class="hover:bg-neutral-800/30 transition">
+          <td class="py-3 font-mono font-bold text-neutral-300">${p.id}</td>
+          <td class="py-3 font-sans text-white">${p.slug}</td>
+          <td class="py-3 font-bold text-white">$${parseFloat(p.amount_usd).toFixed(2)}</td>
+          <td class="py-3 text-amber-400 font-mono">${(p.amount_sats || 0).toLocaleString()}</td>
+          <td class="py-3 font-sans">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              p.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400'
+            }">${p.status}</span>
+          </td>
+          <td class="py-3 font-sans">
+            <span class="text-[10px] ${p.webhook_status === 'DELIVERED' ? 'text-emerald-400 font-bold' : 'text-neutral-500'}">
+              ${p.webhook_status || 'NONE'}
+            </span>
+          </td>
+          <td class="py-3 text-neutral-400">${new Date(p.created_at).toLocaleString()}</td>
+          <td class="py-3 text-right">
+            ${p.status === 'PENDING' ? `
+              <button onclick="confirmTestPayment('${p.id}')" class="text-[10px] text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded hover:bg-emerald-500/10">
+                Mark Paid
+              </button>
+            ` : '<span class="text-neutral-600">✓ Settled</span>'}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function renderWebhookLogs(logs) {
+      const tbody = document.getElementById("webhookLogsTbody");
+      if (!logs || logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-neutral-500 font-sans">No webhook deliveries recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = logs.slice(0, 15).map(l => `
+        <tr class="hover:bg-neutral-800/30 transition">
+          <td class="py-2.5 font-bold text-neutral-300 font-sans">${l.event}</td>
+          <td class="py-2.5 text-neutral-400 truncate max-w-xs" title="${l.url}">${l.url}</td>
+          <td class="py-2.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${l.success ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+              HTTP ${l.http_code || 0}
+            </span>
+          </td>
+          <td class="py-2.5 text-neutral-400">${l.duration_ms}ms</td>
+          <td class="py-2.5 text-neutral-400">${new Date(l.timestamp).toLocaleTimeString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      const activeNav = document.getElementById(`nav-${tabId}`);
+
+      if (activeTab) activeTab.classList.remove("hidden");
+      if (activeNav) activeNav.classList.add("active");
+
+      const headings = {
+        overview: ["Merchant Overview", "Real-time Cash App Lightning gateway performance and controls."],
+        pages: ["Payment Pages", "Create, customize, and share your Cash App checkout pages."],
+        transactions: ["Transactions Ledger", "Audit all incoming Lightning payments and settlement states."],
+        webhooks: ["Webhooks & Developer Hub", "Secure HMAC-SHA256 signature hooks with your website."],
+        settings: ["Merchant Settings", "Payout Lightning Address and private Telegram alert bots."]
+      };
+
+      if (headings[tabId]) {
+        document.getElementById("pageHeading").innerText = headings[tabId][0];
+        document.getElementById("pageSubheading").innerText = headings[tabId][1];
+      }
+    }
+
+    function switchCodeTab(lang) {
+      document.querySelectorAll(".code-snippet").forEach(el => el.classList.add("hidden"));
+      document.getElementById("code-tab-php").className = "px-3 py-1 rounded-lg text-neutral-400 hover:text-white";
+      document.getElementById("code-tab-node").className = "px-3 py-1 rounded-lg text-neutral-400 hover:text-white";
+      document.getElementById("code-tab-python").className = "px-3 py-1 rounded-lg text-neutral-400 hover:text-white";
+
+      document.getElementById(`code-${lang}`).classList.remove("hidden");
+      document.getElementById(`code-tab-${lang}`).className = "px-3 py-1 rounded-lg bg-neutral-800 text-[#00D632]";
+    }
+
+    // Modal Handlers
+    function openCreatePageModal() {
+      document.getElementById("modalPageId").value = "";
+      document.getElementById("pageModalTitle").innerText = "Create Payment Page";
+      document.getElementById("modalPageTitleInput").value = "";
+      document.getElementById("modalSlugInput").value = "";
+      document.getElementById("modalReceiverInput").value = currentUser ? currentUser.name : "";
+      document.getElementById("modalFixedAmountInput").value = "";
+      document.getElementById("modalSuccessUrlInput").value = "";
+      document.getElementById("modalDescriptionInput").value = "";
+      document.getElementById("modalVerifiedInput").checked = true;
+      toggleFixedInput(false);
+      document.querySelector('input[name="pageType"][value="keypad"]').checked = true;
+
+      document.getElementById("pageModalBackdrop").classList.remove("hidden");
+    }
+
+    function openEditPageModal(pageId) {
+      const page = userPages.find(p => p.id === pageId);
+      if (!page) return;
+
+      document.getElementById("modalPageId").value = page.id;
+      document.getElementById("pageModalTitle").innerText = "Edit Payment Page";
+      document.getElementById("modalPageTitleInput").value = page.title;
+      document.getElementById("modalSlugInput").value = page.slug;
+      document.getElementById("modalReceiverInput").value = page.receiver_name;
+      document.getElementById("modalFixedAmountInput").value = page.fixed_amount || "";
+      document.getElementById("modalSuccessUrlInput").value = page.success_url || "";
+      document.getElementById("modalDescriptionInput").value = page.description || "";
+      document.getElementById("modalVerifiedInput").checked = page.is_verified;
+
+      if (page.type === "fixed") {
+        document.querySelector('input[name="pageType"][value="fixed"]').checked = true;
+        toggleFixedInput(true);
+      } else {
+        document.querySelector('input[name="pageType"][value="keypad"]').checked = true;
+        toggleFixedInput(false);
+      }
+
+      document.getElementById("pageModalBackdrop").classList.remove("hidden");
+    }
+
+    function closePageModal() {
+      document.getElementById("pageModalBackdrop").classList.add("hidden");
+    }
+
+    function toggleFixedInput(isFixed) {
+      const container = document.getElementById("fixedAmountContainer");
+      if (isFixed) {
+        container.classList.remove("hidden");
+      } else {
+        container.classList.add("hidden");
+      }
+    }
+
+    function autoGenerateSlug(title) {
+      if (!document.getElementById("modalPageId").value) {
+        const slug = title.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+        document.getElementById("modalSlugInput").value = slug;
+      }
+    }
+
+    async function handleSavePage(e) {
+      e.preventDefault();
+      const pageId = document.getElementById("modalPageId").value;
+      const type = document.querySelector('input[name="pageType"]:checked').value;
+
+      const body = {
+        title: document.getElementById("modalPageTitleInput").value,
+        slug: document.getElementById("modalSlugInput").value,
+        receiver_name: document.getElementById("modalReceiverInput").value,
+        type: type,
+        fixed_amount: type === "fixed" ? parseFloat(document.getElementById("modalFixedAmountInput").value) || 0 : 0,
+        success_url: document.getElementById("modalSuccessUrlInput").value,
+        description: document.getElementById("modalDescriptionInput").value,
+        is_verified: document.getElementById("modalVerifiedInput").checked
+      };
+
+      try {
+        const url = pageId ? `/api/pages/${pageId}` : "/api/pages";
+        const method = pageId ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        const json = await res.json();
+        if (json.success) {
+          showToast(pageId ? "Page updated!" : "Page created!");
+          closePageModal();
+          await loadDashboardData();
+        } else {
+          showToast(json.error || "Failed to save page", "⚠️");
+        }
+      } catch (err) {
+        showToast("Error saving page", "⚠️");
+      }
+    }
+
+    async function togglePageActive(pageId) {
+      try {
+        const res = await fetch(`/api/pages/${pageId}/toggle`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Status updated");
+          await loadDashboardData();
+        }
+      } catch (e) { }
+    }
+
+    async function deletePage(pageId) {
+      if (!confirm("Are you sure you want to delete this payment page?")) return;
+      try {
+        const res = await fetch(`/api/pages/${pageId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Page deleted");
+          await loadDashboardData();
+        }
+      } catch (e) { }
+    }
+
+    // Embed Modal
+    function openEmbedModal(pageId) {
+      const page = userPages.find(p => p.id === pageId);
+      if (!page) return;
+
+      const origin = window.location.origin;
+      const checkoutUrl = `${origin}/pay/${page.slug}`;
+
+      document.getElementById("embedPageTitle").innerText = `Integration for: ${page.title} (/pay/${page.slug})`;
+      document.getElementById("embedDirectLink").value = checkoutUrl;
+
+      document.getElementById("embedButtonCode").value = 
+`<a href="${checkoutUrl}" target="_blank" style="display:inline-flex;align-items:center;padding:12px 24px;border-radius:9999px;background:#00D632;color:#000;font-family:sans-serif;font-weight:800;font-size:14px;text-decoration:none;box-shadow:0 8px 20px rgba(0,214,50,0.3);">
+  <span style="margin-right:8px;">⚡</span> Pay with Cash App
+</a>`;
+
+      document.getElementById("embedIframeCode").value = 
+`<iframe src="${checkoutUrl}" width="100%" height="700" style="border:none;max-width:440px;border-radius:28px;box-shadow:0 12px 35px rgba(0,0,0,0.3);" allow="clipboard-write"></iframe>`;
+
+      document.getElementById("embedModalBackdrop").classList.remove("hidden");
+    }
+
+    function closeEmbedModal() {
+      document.getElementById("embedModalBackdrop").classList.add("hidden");
+    }
+
+    function copySnippet(elementId) {
+      const el = document.getElementById(elementId);
+      copyToClipboard(el.value, "Code copied to clipboard!");
+    }
+
+    function copyToClipboard(text, successMsg = "Copied!") {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg, "📋");
+      });
+    }
+
+    function copyWebhookSecret() {
+      const secret = document.getElementById("webhookSecretDisplay").value;
+      copyToClipboard(secret, "Webhook secret copied!");
+    }
+
+    // Save Webhook URL
+    async function saveWebhookSettings() {
+      const url = document.getElementById("webhookUrlInput").value.trim();
+      try {
+        const res = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ webhook_url: url })
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentUser = json.user;
+          showToast("Webhook URL saved!");
+          renderOverviewStats();
+        }
+      } catch (e) {
+        showToast("Failed to save webhook URL", "⚠️");
+      }
+    }
+
+    // Test Webhook Trigger
+    async function triggerTestWebhook() {
+      const url = document.getElementById("webhookUrlInput").value.trim();
+      if (!url) {
+        showToast("Please enter a Webhook URL first", "⚠️");
+        return;
+      }
+
+      const btn = document.getElementById("testWebhookBtn");
+      const resultBox = document.getElementById("testWebhookResult");
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ Dispatching HMAC Ping...</span>`;
+
+      try {
+        const res = await fetch("/api/transactions/webhooks/test", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ url })
+        });
+
+        const json = await res.json();
+        resultBox.classList.remove("hidden");
+
+        if (json.success) {
+          const r = json.result;
+          resultBox.innerHTML = `
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-neutral-800">
+              <span class="font-bold ${r.success ? 'text-emerald-400' : 'text-rose-400'}">
+                ${r.success ? '✓ Webhook Delivered Successfully' : '⚠️ Webhook Error Response'}
+              </span>
+              <span class="px-2 py-0.5 rounded ${r.success ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                HTTP ${r.http_code}
+              </span>
+            </div>
+            <p class="text-neutral-400 text-[11px] mb-1"><strong>Target:</strong> ${r.target_url}</p>
+            <p class="text-neutral-400 text-[11px] mb-1"><strong>Latency:</strong> ${r.duration_ms}ms</p>
+            <p class="text-neutral-400 text-[11px] mb-2"><strong>Delivery ID:</strong> ${r.delivery_id}</p>
+            <div class="bg-neutral-900 p-2.5 rounded text-[10px] text-neutral-300 overflow-x-auto">
+              <strong>Server Response Body:</strong><br/>
+              ${r.response_body || '(Empty body)'}
+            </div>
+          `;
+          showToast(r.success ? "Webhook delivered (200 OK)!" : `Received HTTP ${r.http_code}`, r.success ? "✓" : "⚠️");
+          await loadDashboardData();
+        } else {
+          resultBox.innerHTML = `<span class="text-rose-400">${json.error || 'Test failed'}</span>`;
+        }
+      } catch (err) {
+        resultBox.classList.remove("hidden");
+        resultBox.innerHTML = `<span class="text-rose-400">Network error during test dispatch</span>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>⚡ Send Test Webhook Ping</span>`;
+      }
+    }
+
+    async function regenerateApiKeys() {
+      if (!confirm("Regenerating API keys will invalidate your existing keys and webhook secret. Continue?")) return;
+      try {
+        const res = await fetch("/api/auth/regenerate-keys", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentUser = json.user;
+          renderUserProfile();
+          showToast("Keys regenerated successfully!");
+        }
+      } catch (e) { }
+    }
+
+    // Save Settings Form
+    async function handleSaveProfile(e) {
+      e.preventDefault();
+      const body = {
+        name: document.getElementById("settingsName").value,
+        lightning_address: document.getElementById("settingsLightningAddress").value,
+        telegram_bot_token: document.getElementById("settingsTelegramToken").value,
+        telegram_chat_id: document.getElementById("settingsTelegramChatId").value
+      };
+
+      const newPass = document.getElementById("settingsNewPassword").value;
+      if (newPass) body.password = newPass;
+
+      try {
+        const res = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentUser = json.user;
+          renderUserProfile();
+          showToast("Profile settings saved!");
+        } else {
+          showToast(json.error || "Failed to save profile", "⚠️");
+        }
+      } catch (e) {
+        showToast("Error updating profile", "⚠️");
+      }
+    }
+
+    async function confirmTestPayment(paymentId) {
+      try {
+        const res = await fetch(`/api/public/checkout/${paymentId}/confirm`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Payment marked settled & Webhook dispatched!");
+          await loadDashboardData();
+        }
+      } catch (e) { }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("cashapp_auth_token");
+      window.location.href = "/";
+    }
+
+    // Initialize Dashboard
+    initDashboard();
+  </script>
+</body>
+
+</html>
+

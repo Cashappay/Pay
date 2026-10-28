@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner & Management Portal • Cash App Gateway</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/cashapp-logo.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #080808;
+      color: #EDEDED;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .glass-card {
+      background: rgba(20, 20, 20, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-btn.active {
+      background-color: #171717;
+      color: #00D632;
+      border-color: rgba(0, 214, 50, 0.3);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#00D632] selection:text-black">
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#0F0F0F] border-b md:border-b-0 md:border-r border-neutral-800 shrink-0 flex flex-col justify-between z-30">
+    <div>
+      <!-- Header -->
+      <div class="p-5 flex items-center justify-between border-b border-neutral-800">
+        <a href="/admin" class="flex items-center space-x-3">
+          <img src="/assets/cashapp-logo.svg" alt="Cash App" class="w-9 h-9 rounded-xl shadow-lg shadow-emerald-500/20" />
+          <div>
+            <div class="text-sm font-black text-white flex items-center space-x-1.5">
+              <span>Management</span>
+              <span class="text-[10px] bg-purple-500/20 text-purple-400 px-1.5 py-0.5 rounded-full font-mono border border-purple-500/30">Owner</span>
+            </div>
+            <p class="text-[10px] text-neutral-400 font-medium">Platform Super Admin</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-3 space-y-1">
+        <button onclick="switchTab('overview')" id="nav-overview"
+          class="nav-btn active w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span>Platform Overview</span>
+        </button>
+
+        <button onclick="switchTab('users')" id="nav-users"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span>User Monitoring</span>
+        </button>
+
+        <button onclick="switchTab('paylinks')" id="nav-paylinks"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          <span>Payment Links</span>
+        </button>
+
+        <button onclick="switchTab('visitors')" id="nav-visitors"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Visitors & Traffic</span>
+        </button>
+
+        <button onclick="switchTab('transactions')" id="nav-transactions"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-[#00D632]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>Global Payments</span>
+        </button>
+
+        <button onclick="switchTab('settings')" id="nav-settings"
+          class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-800 transition border border-transparent">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>Owner Settings</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User Profile & Sign Out -->
+    <div class="p-4 border-t border-neutral-800 bg-[#0A0A0A]">
+      <div class="flex items-center justify-between">
+        <div class="min-w-0">
+          <p id="staffName" class="text-xs font-bold text-white truncate">Management</p>
+          <p class="text-[10px] text-[#00D632] font-mono font-bold">Owner Access</p>
+        </div>
+        <button onclick="handleLogout()" title="Log Out"
+          class="text-neutral-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-neutral-800 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div>
+        <h1 id="pageHeading" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Owner & Management Console</h1>
+        <p id="pageSubheading" class="text-xs sm:text-sm text-neutral-400 mt-1">Platform monitoring, user account freeze/unfreeze, and traffic analytics.</p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="loadAdminData()" class="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-bold text-neutral-300 transition flex items-center space-x-1.5">
+          <span>🔄 Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+    <div id="tab-overview" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Metric 1: Total Volume -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Gross Platform Volume</span>
+            <span class="text-emerald-400 text-base">💰</span>
+          </div>
+          <div id="metricTotalVolume" class="text-2xl sm:text-3xl font-black text-white">$0.00</div>
+          <p id="metricTotalSats" class="text-xs font-mono text-emerald-400 mt-1">0 Sats processed</p>
+        </div>
+
+        <!-- Metric 2: Owner Cut (Every 3rd Payment) -->
+        <div class="glass-card p-5 rounded-2xl border border-purple-500/30">
+          <div class="flex justify-between items-center text-xs text-purple-400 font-semibold mb-2">
+            <span>Owner Satoshi Revenue (3rd Cut)</span>
+            <span class="text-purple-400 text-base">👑</span>
+          </div>
+          <div id="metricOwnerVolume" class="text-2xl sm:text-3xl font-black text-purple-400">$0.00</div>
+          <p id="metricOwnerSats" class="text-xs font-mono text-purple-300 mt-1">0 Sats received</p>
+        </div>
+
+        <!-- Metric 3: Total Users -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Total Registered Users</span>
+            <span class="text-sky-400 text-base">👥</span>
+          </div>
+          <div id="metricTotalUsers" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p id="metricUserBreakdown" class="text-xs text-neutral-400 mt-1">0 Active • 0 Frozen • 0 Blocked</p>
+        </div>
+
+        <!-- Metric 4: Traffic / Clicks -->
+        <div class="glass-card p-5 rounded-2xl">
+          <div class="flex justify-between items-center text-xs text-neutral-400 font-semibold mb-2">
+            <span>Total Tracked Visitors</span>
+            <span class="text-amber-400 text-base">🌍</span>
+          </div>
+          <div id="metricTotalVisitors" class="text-2xl sm:text-3xl font-black text-white">0</div>
+          <p class="text-xs text-neutral-400 mt-1">Live country tracking</p>
+        </div>
+      </div>
+
+      <!-- Quick Control Banners -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-1">Owner Payout Wallet</h3>
+            <p id="quickOwnerWallet" class="text-xs font-mono text-purple-400 truncate max-w-sm">Loading...</p>
+            <p class="text-[11px] text-neutral-500 mt-1">Every 3rd user payment automatically settles to this wallet address.</p>
+          </div>
+          <button onclick="switchTab('settings')" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition shrink-0 ml-4">
+            Edit Wallet
+          </button>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-1">Telegram Alert Bot</h3>
+            <p id="quickTelegramStatus" class="text-xs text-emerald-400 font-semibold">Active & Listening</p>
+            <p class="text-[11px] text-neutral-500 mt-1">Receives instant alerts on invoice creation & settlement.</p>
+          </div>
+          <button onclick="testTelegramAlert()" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs rounded-xl transition shrink-0 ml-4">
+            Test Ping
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: USER MONITORING ==================== -->
+    <div id="tab-users" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">User Monitoring & Account Controls</h2>
+            <p class="text-xs text-neutral-400">Add accounts manually, visit user profiles, view payment links, freeze, block, or delete.</p>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <input type="text" id="userSearchInput" oninput="filterUsersTable()" placeholder="Search by name, email, or wallet..."
+              class="bg-neutral-900 border border-neutral-700 text-xs rounded-xl px-4 py-2 text-white w-full sm:w-64 focus:outline-none focus:border-[#00D632]" />
+            <button onclick="openAddUserModal()" class="px-4 py-2 bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold text-xs rounded-xl transition shadow-lg shadow-emerald-500/20 shrink-0 flex items-center space-x-1.5 active:scale-95">
+              <span>+ Add User / Staff</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">User</th>
+                <th class="pb-3">Role</th>
+                <th class="pb-3">Satoshi Wallet Address</th>
+                <th class="pb-3">Payments Count</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3 text-right">Admin Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-neutral-800 font-sans">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: PAYMENT LINKS FULL CONTROL ==================== -->
+    <div id="tab-paylinks" class="tab-content hidden space-y-6">
+      <!-- Pay Links Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card p-5 rounded-2xl">
+          <span class="text-xs text-neutral-400 font-medium">Total Pay Links</span>
+          <div id="metricTotalPayLinks" class="text-2xl font-black text-white mt-1">0</div>
+          <p class="text-[11px] text-neutral-500 mt-0.5">Across all platform merchants</p>
+        </div>
+        <div class="glass-card p-5 rounded-2xl">
+          <span class="text-xs text-emerald-400 font-medium">Active Links</span>
+          <div id="metricActivePayLinks" class="text-2xl font-black text-[#00D632] mt-1">0</div>
+          <p class="text-[11px] text-neutral-500 mt-0.5">Ready to receive payments</p>
+        </div>
+        <div class="glass-card p-5 rounded-2xl">
+          <span class="text-xs text-amber-400 font-medium">Paused Links</span>
+          <div id="metricPausedPayLinks" class="text-2xl font-black text-amber-400 mt-1">0</div>
+          <p class="text-[11px] text-neutral-500 mt-0.5">Temporarily deactivated</p>
+        </div>
+        <div class="glass-card p-5 rounded-2xl">
+          <span class="text-xs text-sky-400 font-medium">Total Processed</span>
+          <div id="metricPayLinksVolume" class="text-2xl font-black text-sky-400 mt-1">$0.00</div>
+          <p id="metricPayLinksSats" class="text-[11px] text-neutral-500 mt-0.5 font-mono">0 Sats settled</p>
+        </div>
+      </div>
+
+      <!-- Pay Links List Table Container -->
+      <div class="glass-card p-6 rounded-2xl">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">Payment Links Management & Controls</h2>
+            <p class="text-xs text-neutral-400">Admin full control over every merchant's payment pages, pricing, wallet destination, and live state.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <input type="text" id="payLinksSearchInput" oninput="filterPayLinksTable()" placeholder="Search title, slug, merchant..."
+              class="bg-neutral-900 border border-neutral-700 text-xs rounded-xl px-4 py-2 text-white w-full sm:w-56 focus:outline-none focus:border-[#00D632]" />
+            <select id="payLinksFilterStatus" onchange="filterPayLinksTable()" class="bg-neutral-900 border border-neutral-700 text-xs rounded-xl px-3 py-2 text-neutral-300 focus:outline-none">
+              <option value="all">All Statuses</option>
+              <option value="active">Active Only</option>
+              <option value="paused">Paused Only</option>
+            </select>
+            <button onclick="openCreatePayLinkModal()" class="px-4 py-2 bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold text-xs rounded-xl transition shadow-lg shadow-emerald-500/20 shrink-0 flex items-center space-x-1.5 active:scale-95">
+              <span>+ Create Pay Link</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Page Title & Live URL</th>
+                <th class="pb-3">Merchant / Creator</th>
+                <th class="pb-3">Destination Satoshi Wallet</th>
+                <th class="pb-3">Pricing Type</th>
+                <th class="pb-3">Volume</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3 text-right">Admin Controls</th>
+              </tr>
+            </thead>
+            <tbody id="payLinksTableBody" class="divide-y divide-neutral-800 font-sans">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: VISITORS & TRAFFIC ==================== -->
+    <div id="tab-visitors" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Visitor Traffic & Country Tracker</h2>
+        <p class="text-xs text-neutral-400 mb-6">Live audit of visitors, clicks, IP addresses, countries, and target pages.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Country</th>
+                <th class="pb-3">IP Address</th>
+                <th class="pb-3">Page Visited</th>
+                <th class="pb-3">Browser / Device</th>
+                <th class="pb-3 text-right">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="visitorsTableBody" class="divide-y divide-neutral-800 font-mono">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: GLOBAL PAYMENTS ==================== -->
+    <div id="tab-transactions" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Global Payment Ledger</h2>
+        <p class="text-xs text-neutral-400 mb-6">Inspect all transactions and review the 2-to-1 fee routing execution.</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-neutral-400 border-b border-neutral-800 font-semibold">
+              <tr>
+                <th class="pb-3">Payment ID</th>
+                <th class="pb-3">Merchant</th>
+                <th class="pb-3">Amount</th>
+                <th class="pb-3">Satoshis</th>
+                <th class="pb-3">Routed To</th>
+                <th class="pb-3">Target Wallet</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3 text-right">Date</th>
+              </tr>
+            </thead>
+            <tbody id="globalPaymentsBody" class="divide-y divide-neutral-800 font-mono">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: SETTINGS ==================== -->
+    <div id="tab-settings" class="tab-content hidden space-y-6">
+      <div class="glass-card p-6 rounded-2xl max-w-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Owner Platform Settings</h2>
+        <p class="text-xs text-neutral-400 mb-6">Configure the master Satoshi wallet address and Telegram alert bot.</p>
+
+        <form onsubmit="handleSaveSettings(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Owner Master Satoshi Wallet Address (Lightning Address) *
+            </label>
+            <input type="text" id="ownerLightningInput" required placeholder="owner@walletofsatoshi.com"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-purple-400 font-mono focus:outline-none focus:border-purple-500" />
+            <p class="text-[11px] text-neutral-500 mt-1">
+              Every 3rd user payment (3, 6, 9...) will be routed directly to this Satoshi wallet address.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1.5">
+              Payment Commission Cycle Interval
+            </label>
+            <input type="number" id="feeIntervalInput" min="1" max="100" value="3"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            <p class="text-[11px] text-neutral-500 mt-1">
+              Set to 3: 2 payments go to user, the 3rd payment goes to owner.
+            </p>
+          </div>
+
+          <div class="pt-3 border-t border-neutral-800 space-y-3">
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Platform Telegram Notifications</h3>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Telegram Bot Token</label>
+              <input type="text" id="telegramTokenInput" placeholder="8778648114:AAEgz..."
+                class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Telegram Chat ID</label>
+              <input type="text" id="telegramChatIdInput" placeholder="-1004437748729"
+                class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+            </div>
+          </div>
+
+          <button type="submit"
+            class="bg-purple-600 hover:bg-purple-500 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-purple-500/20">
+            Save Platform Settings
+          </button>
+        </form>
+      </div>
+
+      <!-- Administrator Profile Settings Card -->
+      <div class="glass-card p-6 rounded-2xl max-w-2xl">
+        <h2 class="text-xl font-bold text-white mb-1">Administrator Profile Settings</h2>
+        <p class="text-xs text-neutral-400 mb-6">Update your management name, login email, date of birth, and password.</p>
+
+        <form onsubmit="handleSaveAdminProfile(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Admin Profile Name *</label>
+            <input type="text" id="adminProfileName" required
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address *</label>
+            <input type="email" id="adminProfileEmail" required
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+            <p class="text-[11px] text-neutral-500 mt-1">Used for signing into this Owner & Management portal.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Date of Birth</label>
+            <input type="date" id="adminProfileDob"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+
+          <div class="pt-2 border-t border-neutral-800">
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Update Password (leave blank to keep current)</label>
+            <input type="password" id="adminProfilePassword" placeholder="Enter new password (min 6 characters)" minlength="6"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+          </div>
+
+          <button type="submit" id="saveAdminProfileBtn"
+            class="bg-[#00D632] hover:bg-[#00b82b] text-black font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 active:scale-95">
+            Save Admin Profile
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: ADD USER / STAFF ==================== -->
+  <div id="addUserModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#121212] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-white shadow-2xl relative">
+      <button onclick="closeAddUserModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-white text-lg">✕</button>
+      
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-10 h-10 rounded-2xl bg-[#00D632]/10 border border-[#00D632]/30 flex items-center justify-center text-[#00D632]">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white">Add New Account</h3>
+          <p class="text-xs text-neutral-400">Create merchant, support team, or admin user</p>
+        </div>
+      </div>
+
+      <div id="addUserError" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs"></div>
+
+      <form onsubmit="handleAddUserSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Full Name *</label>
+          <input type="text" id="addUserName" required placeholder="John Doe"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Email Address *</label>
+          <input type="email" id="addUserEmail" required placeholder="john@example.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-neutral-300">Password *</label>
+            <button type="button" onclick="generateRandomPassword()" class="text-[11px] text-[#00D632] hover:underline font-bold">Generate Strong</button>
+          </div>
+          <input type="text" id="addUserPassword" required placeholder="Enter or generate password"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Account Role *</label>
+            <select id="addUserRole" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+              <option value="user">Regular Merchant (User)</option>
+              <option value="support">Support Team (Support)</option>
+              <option value="admin">Administrator (Admin)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Initial Status *</label>
+            <select id="addUserStatus" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+              <option value="active">Active</option>
+              <option value="frozen">Frozen</option>
+              <option value="blocked">Blocked</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Default Satoshi Wallet Address</label>
+          <input type="text" id="addUserWallet" placeholder="wallet@walletofsatoshi.com (optional)"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-3">
+          <button type="button" onclick="closeAddUserModal()" class="px-4 py-2 rounded-xl text-neutral-400 hover:text-white text-xs font-bold">
+            Cancel
+          </button>
+          <button type="submit" id="addUserSubmitBtn" class="px-5 py-2.5 rounded-xl bg-[#00D632] hover:bg-[#00b82b] text-black text-xs font-extrabold shadow-lg shadow-emerald-500/20 active:scale-95">
+            Create Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CREATE PAY LINK ==================== -->
+  <div id="createPayLinkModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#121212] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-white shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeCreatePayLinkModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-white text-lg">✕</button>
+
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-[#00D632]">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white">Create New Payment Link</h3>
+          <p class="text-xs text-neutral-400">Generate a custom Cash App pay link for any merchant</p>
+        </div>
+      </div>
+
+      <div id="createPayLinkError" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs"></div>
+
+      <form onsubmit="handleCreatePayLinkSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Assign to Merchant / User *</label>
+          <select id="newPayLinkUser" required onchange="handleNewPayLinkUserChange()" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+            <!-- Rendered via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Page Title *</label>
+          <input type="text" id="newPayLinkTitle" required placeholder="e.g. VIP Consultation" oninput="autoFillSlug(this.value)"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Custom Pay URL Slug *</label>
+          <div class="flex items-center">
+            <span class="bg-neutral-800 border border-r-0 border-neutral-700 rounded-l-xl px-3 py-2.5 text-xs text-neutral-400 font-mono">/pay/</span>
+            <input type="text" id="newPayLinkSlug" required placeholder="vip-consultation"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-r-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Receiver Name Shown on Checkout</label>
+          <input type="text" id="newPayLinkReceiver" placeholder="e.g. Natasha Torres"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Payment Mode</label>
+            <select id="newPayLinkType" onchange="toggleNewFixedAmountInput(this.value)"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+              <option value="keypad">Dynamic Keypad (Customer enters amount)</option>
+              <option value="fixed">Fixed Price</option>
+            </select>
+          </div>
+
+          <div id="newFixedAmountWrapper" class="hidden">
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Fixed USD Amount ($)</label>
+            <input type="number" step="0.01" min="0.10" id="newPayLinkFixedAmount" value="5.00"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Destination Satoshi Wallet Address *</label>
+          <input type="text" id="newPayLinkWallet" required placeholder="wallet@walletofsatoshi.com"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Description (Optional)</label>
+          <textarea id="newPayLinkDesc" rows="2" placeholder="Tell donors or customers what this payment is for..."
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]"></textarea>
+        </div>
+
+        <div class="flex items-center space-x-2 pt-1">
+          <input type="checkbox" id="newPayLinkVerified" checked class="rounded accent-[#00D632]" />
+          <label for="newPayLinkVerified" class="text-xs text-neutral-300 select-none">Show Verified Merchant Badge (Green checkmark)</label>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-3">
+          <button type="button" onclick="closeCreatePayLinkModal()" class="px-4 py-2 rounded-xl text-neutral-400 hover:text-white text-xs font-bold">
+            Cancel
+          </button>
+          <button type="submit" id="createPayLinkSubmitBtn" class="px-6 py-2.5 rounded-xl bg-[#00D632] hover:bg-[#00b82b] text-black text-xs font-extrabold shadow-lg shadow-emerald-500/20 active:scale-95">
+            Create Pay Link
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: EDIT PAY LINK ==================== -->
+  <div id="editPayLinkModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-[#121212] border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-white shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeEditPayLinkModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-white text-lg">✕</button>
+
+      <div class="flex items-center space-x-3 mb-6">
+        <div class="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white">Edit Payment Link</h3>
+          <p class="text-xs text-neutral-400">Modify slug, pricing, destination wallet, or active state</p>
+        </div>
+      </div>
+
+      <div id="editPayLinkError" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs"></div>
+
+      <form onsubmit="handleEditPayLinkSubmit(event)" class="space-y-4">
+        <input type="hidden" id="editPayLinkId" />
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Reassign Merchant / User</label>
+          <select id="editPayLinkUser" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+            <!-- Rendered via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Page Title *</label>
+          <input type="text" id="editPayLinkTitle" required
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Custom Pay URL Slug *</label>
+          <div class="flex items-center">
+            <span class="bg-neutral-800 border border-r-0 border-neutral-700 rounded-l-xl px-3 py-2.5 text-xs text-neutral-400 font-mono">/pay/</span>
+            <input type="text" id="editPayLinkSlug" required
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-r-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Receiver Name Shown on Checkout</label>
+          <input type="text" id="editPayLinkReceiver"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Payment Mode</label>
+            <select id="editPayLinkType" onchange="toggleEditFixedAmountInput(this.value)"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632]">
+              <option value="keypad">Dynamic Keypad</option>
+              <option value="fixed">Fixed Price</option>
+            </select>
+          </div>
+
+          <div id="editFixedAmountWrapper" class="hidden">
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Fixed USD Amount ($)</label>
+            <input type="number" step="0.01" min="0.10" id="editPayLinkFixedAmount"
+              class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Destination Satoshi Wallet Address *</label>
+          <input type="text" id="editPayLinkWallet" required
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#00D632] font-mono" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 mb-1">Description</label>
+          <textarea id="editPayLinkDesc" rows="2"
+            class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-[#00D632]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-neutral-300 mb-1">Status</label>
+            <select id="editPayLinkActive" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+              <option value="true">Active (Receives payments)</option>
+              <option value="false">Paused (Temporarily stopped)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center space-x-2 pt-6">
+            <input type="checkbox" id="editPayLinkVerified" class="rounded accent-[#00D632]" />
+            <label for="editPayLinkVerified" class="text-xs text-neutral-300 select-none">Verified Badge</label>
+          </div>
+        </div>
+
+        <div class="pt-4 flex justify-between items-center">
+          <button type="button" onclick="handleDeletePayLinkFromModal()" class="text-rose-400 hover:text-rose-300 text-xs font-bold flex items-center space-x-1">
+            <span>🗑️ Delete Link</span>
+          </button>
+          <div class="flex space-x-3">
+            <button type="button" onclick="closeEditPayLinkModal()" class="px-4 py-2 rounded-xl text-neutral-400 hover:text-white text-xs font-bold">
+              Cancel
+            </button>
+            <button type="submit" id="editPayLinkSubmitBtn" class="px-6 py-2.5 rounded-xl bg-[#00D632] hover:bg-[#00b82b] text-black text-xs font-extrabold shadow-lg shadow-emerald-500/20 active:scale-95">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast"
+    class="opacity-0 pointer-events-none fixed top-5 right-5 bg-neutral-900 border border-neutral-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-2xl z-50 transition-all">
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <script>
+    let authToken = localStorage.getItem("cashapp_auth_token");
+    let allUsers = [];
+    let allPayLinks = [];
+    let allPayments = [];
+    let allVisitors = [];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toastMsg").innerText = msg;
+      t.classList.remove("opacity-0", "pointer-events-none");
+      t.classList.add("opacity-100");
+      setTimeout(() => {
+        t.classList.remove("opacity-100");
+        t.classList.add("opacity-0", "pointer-events-none");
+      }, 2500);
+    }
+
+    async function initAdmin() {
+      if (!authToken) {
+        window.location.href = "/?login=1";
+        return;
+      }
+
+      try {
+        const meRes = await fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const meData = await meRes.json();
+        if (!meData.success || !['owner', 'admin', 'support'].includes(meData.user.role)) {
+          alert("Access denied. Owner and Management team only.");
+          window.location.href = "/profile";
+          return;
+        }
+
+        document.getElementById("staffName").innerText = meData.user.name;
+        document.getElementById("adminProfileName").value = meData.user.name || "";
+        document.getElementById("adminProfileEmail").value = meData.user.email || "";
+        document.getElementById("adminProfileDob").value = meData.user.dob || "";
+        await loadAdminData();
+      } catch (e) {
+        window.location.href = "/?login=1";
+      }
+    }
+
+    async function loadAdminData() {
+      try {
+        const [overviewRes, usersRes, pagesRes, txRes, visRes, setRes] = await Promise.all([
+          fetch("/api/admin/overview", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/users", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/pages", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/transactions", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/visitors", { headers: { "Authorization": `Bearer ${authToken}` } }),
+          fetch("/api/admin/settings", { headers: { "Authorization": `Bearer ${authToken}` } })
+        ]);
+
+        const overview = await overviewRes.json();
+        const users = await usersRes.json();
+        const pages = await pagesRes.json();
+        const tx = await txRes.json();
+        const visitors = await visRes.json();
+        const settings = await setRes.json();
+
+        if (overview.success) renderOverview(overview.stats);
+        if (users.success) {
+          allUsers = users.users;
+          renderUsersTable(allUsers);
+        }
+        if (pages.success) {
+          allPayLinks = pages.pages;
+          renderPayLinksTable(allPayLinks);
+        }
+        if (tx.success) {
+          allPayments = tx.payments;
+          renderGlobalPayments(allPayments);
+        }
+        if (visitors.success) {
+          allVisitors = visitors.visitors;
+          renderVisitorsTable(allVisitors);
+        }
+        if (settings.success) renderSettings(settings.settings);
+      } catch (err) {
+        console.error("Admin load error:", err);
+      }
+    }
+
+    function renderOverview(s) {
+      document.getElementById("metricTotalVolume").innerText = `$${parseFloat(s.total_volume_usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("metricTotalSats").innerText = `${s.total_volume_sats.toLocaleString()} Sats processed`;
+      document.getElementById("metricOwnerVolume").innerText = `$${parseFloat(s.owner_volume_usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("metricOwnerSats").innerText = `${s.owner_volume_sats.toLocaleString()} Sats (${s.owner_payments_count} cuts)`;
+      document.getElementById("metricTotalUsers").innerText = s.total_users;
+      document.getElementById("metricUserBreakdown").innerText = `${s.active_users} Active • ${s.frozen_users} Frozen • ${s.blocked_users} Blocked`;
+      document.getElementById("metricTotalVisitors").innerText = s.total_visitors;
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById("usersTableBody");
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-neutral-500">No users found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-3">
+            <p class="font-bold text-white text-xs">${escapeHtml(u.name)}</p>
+            <p class="text-[11px] text-neutral-400 font-mono">${escapeHtml(u.email)}</p>
+          </td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+              u.role === 'owner' ? 'bg-purple-500/20 text-purple-400' :
+              u.role === 'admin' ? 'bg-blue-500/20 text-blue-400' :
+              u.role === 'support' ? 'bg-amber-500/20 text-amber-400' :
+              'bg-neutral-800 text-neutral-300'
+            }">${u.role.toUpperCase()}</span>
+          </td>
+          <td class="py-3 font-mono text-[11px] text-neutral-300 max-w-xs truncate" title="${escapeHtml(u.lightning_address)}">
+            ${escapeHtml(u.lightning_address) || '<span class="text-neutral-500">None configured</span>'}
+          </td>
+          <td class="py-3 font-mono font-bold text-amber-400">${u.payments_count || 0}</td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              u.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+              u.status === 'frozen' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+              'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+            }">
+              ${u.status.toUpperCase()}
+            </span>
+          </td>
+          <td class="py-3 text-right space-x-1.5 font-sans whitespace-nowrap">
+            <!-- Visit Profile Option -->
+            <button onclick="visitUserProfile('${u.id}')" title="Visit User Profile & Dashboard"
+              class="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 text-[11px] font-bold transition">
+              👁️ Visit Profile
+            </button>
+
+            <!-- User Pay Links Filter Option -->
+            <button onclick="viewUserPayLinks('${u.id}', '${escapeHtml(u.name)}')" title="View and control payment links created by this user"
+              class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#00D632] text-[11px] font-bold transition">
+              🔗 Pay Links
+            </button>
+
+            ${u.role !== 'owner' ? `
+              ${u.status === 'active' ? `
+                <button onclick="changeUserStatus('${u.id}', 'frozen')" class="px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 text-[11px] font-bold">
+                  Freeze
+                </button>
+              ` : `
+                <button onclick="changeUserStatus('${u.id}', 'active')" class="px-2 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                  Unfreeze
+                </button>
+              `}
+              ${u.status !== 'blocked' ? `
+                <button onclick="changeUserStatus('${u.id}', 'blocked')" class="px-2 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-[11px] font-bold">
+                  Block
+                </button>
+              ` : `
+                <button onclick="changeUserStatus('${u.id}', 'active')" class="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-[11px] font-bold">
+                  Unblock
+                </button>
+              `}
+              <button onclick="deleteUser('${u.id}', '${escapeHtml(u.name)}')" title="Permanently delete user account" class="px-2 py-1 rounded-lg hover:text-rose-400 text-neutral-500 text-[11px]">
+                🗑️
+              </button>
+            ` : '<span class="text-neutral-500 text-[11px] px-1">Owner</span>'}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function filterUsersTable() {
+      const q = document.getElementById("userSearchInput").value.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        u.name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        (u.lightning_address && u.lightning_address.toLowerCase().includes(q))
+      );
+      renderUsersTable(filtered);
+    }
+
+    async function changeUserStatus(userId, status) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}/status`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ status })
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`User status updated to ${status}`);
+          await loadAdminData();
+        }
+      } catch (e) {
+        showToast("Error updating user status");
+      }
+    }
+
+    async function deleteUser(userId, userName) {
+      if (!confirm(`Are you sure you want to permanently delete account "${userName || userId}" and all their payment links?`)) return;
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("User account deleted successfully");
+          await loadAdminData();
+        } else {
+          alert(json.error || "Failed to delete user");
+        }
+      } catch (e) {
+        showToast("Error deleting user");
+      }
+    }
+
+    async function visitUserProfile(userId) {
+      try {
+        showToast("Generating secure profile session...");
+        const res = await fetch(`/api/admin/users/${userId}/impersonate`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          window.open(data.redirectUrl, "_blank");
+        } else {
+          alert(data.error || "Failed to generate profile session.");
+        }
+      } catch (e) {
+        alert("Error visiting user profile: " + e.message);
+      }
+    }
+
+    function viewUserPayLinks(userId, userName) {
+      switchTab('paylinks');
+      document.getElementById("payLinksSearchInput").value = userName;
+      filterPayLinksTable();
+    }
+
+    // ==================== MANUAL USER / SUPPORT ACCOUNT CREATION ====================
+    function openAddUserModal() {
+      document.getElementById("addUserModal").classList.remove("hidden");
+      document.getElementById("addUserName").value = "";
+      document.getElementById("addUserEmail").value = "";
+      document.getElementById("addUserPassword").value = "";
+      document.getElementById("addUserWallet").value = "";
+      document.getElementById("addUserRole").value = "user";
+      document.getElementById("addUserStatus").value = "active";
+      document.getElementById("addUserError").classList.add("hidden");
+    }
+
+    function closeAddUserModal() {
+      document.getElementById("addUserModal").classList.add("hidden");
+    }
+
+    function generateRandomPassword() {
+      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+      let pass = "A1!";
+      for (let i = 0; i < 11; i++) {
+        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById("addUserPassword").value = pass;
+    }
+
+    async function handleAddUserSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById("addUserSubmitBtn");
+      const errBox = document.getElementById("addUserError");
+      errBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.innerText = "Creating...";
+
+      const body = {
+        name: document.getElementById("addUserName").value.trim(),
+        email: document.getElementById("addUserEmail").value.trim(),
+        password: document.getElementById("addUserPassword").value,
+        role: document.getElementById("addUserRole").value,
+        status: document.getElementById("addUserStatus").value,
+        lightning_address: document.getElementById("addUserWallet").value.trim()
+      };
+
+      try {
+        const res = await fetch("/api/admin/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeAddUserModal();
+          showToast(`Account for ${body.name} (${body.role}) created successfully!`);
+          await loadAdminData();
+        } else {
+          errBox.innerText = data.error || "Failed to create user.";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error: " + err.message;
+        errBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Create Account";
+      }
+    }
+
+    // ==================== PAYMENT LINKS FULL CONTROL ====================
+    function renderPayLinksTable(pages) {
+      const tbody = document.getElementById("payLinksTableBody");
+      
+      const totalLinks = pages ? pages.length : 0;
+      const activeLinks = pages ? pages.filter(p => p.is_active !== false).length : 0;
+      const pausedLinks = totalLinks - activeLinks;
+      const totalVolume = pages ? pages.reduce((sum, p) => sum + (parseFloat(p.stats?.total_usd) || 0), 0) : 0;
+      const totalSats = pages ? pages.reduce((sum, p) => sum + (parseInt(p.stats?.total_sats) || 0), 0) : 0;
+
+      document.getElementById("metricTotalPayLinks").innerText = totalLinks;
+      document.getElementById("metricActivePayLinks").innerText = activeLinks;
+      document.getElementById("metricPausedPayLinks").innerText = pausedLinks;
+      document.getElementById("metricPayLinksVolume").innerText = `$${totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("metricPayLinksSats").innerText = `${totalSats.toLocaleString()} Sats settled`;
+
+      if (!pages || pages.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-neutral-500">No payment links found matching criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = pages.map(p => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-3">
+            <div class="flex items-center space-x-1.5">
+              <span class="font-bold text-white text-xs">${escapeHtml(p.title)}</span>
+              ${p.is_verified ? '<span title="Verified Merchant Badge" class="text-[#00D632] text-xs">✓</span>' : ''}
+            </div>
+            <a href="/pay/${escapeHtml(p.slug)}" target="_blank" class="text-[11px] text-[#00D632] font-mono hover:underline flex items-center space-x-1 mt-0.5">
+              <span>/pay/${escapeHtml(p.slug)}</span>
+              <span class="text-[10px]">↗</span>
+            </a>
+          </td>
+          <td class="py-3">
+            <p class="font-bold text-white text-xs">${escapeHtml(p.merchant_name)}</p>
+            <p class="text-[11px] text-neutral-400 font-mono">${escapeHtml(p.merchant_email)}</p>
+          </td>
+          <td class="py-3 font-mono text-[11px] text-neutral-300 max-w-xs truncate" title="${escapeHtml(p.custom_wallet || 'Default Merchant Wallet')}">
+            ${escapeHtml(p.custom_wallet) || '<span class="text-neutral-500">Merchant Default</span>'}
+          </td>
+          <td class="py-3 font-sans">
+            ${p.type === 'fixed' ? `
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-neutral-800 text-white font-mono">
+                $${parseFloat(p.fixed_amount).toFixed(2)} Fixed
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-[#00D632]/10 text-[#00D632] border border-[#00D632]/20">
+                Keypad (Dynamic)
+              </span>
+            `}
+          </td>
+          <td class="py-3 font-mono">
+            <span class="text-white font-bold text-xs">$${parseFloat(p.stats?.total_usd || 0).toFixed(2)}</span>
+            <p class="text-[10px] text-neutral-400 font-sans">${p.stats?.completed_transactions || 0} payments</p>
+          </td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              p.is_active !== false ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-neutral-800 text-neutral-400 border border-neutral-700'
+            }">
+              ${p.is_active !== false ? 'ACTIVE' : 'PAUSED'}
+            </span>
+          </td>
+          <td class="py-3 text-right space-x-1.5 font-sans whitespace-nowrap">
+            <!-- 1. Edit Pay Link -->
+            <button onclick="openEditPayLinkModal('${p.id}')" title="Edit payment link details and wallet"
+              class="px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-[11px] font-bold transition">
+              ✏️ Edit
+            </button>
+
+            <!-- 2. Toggle Status -->
+            <button onclick="togglePayLinkStatus('${p.id}')" title="${p.is_active !== false ? 'Pause link' : 'Activate link'}"
+              class="px-2.5 py-1 rounded-lg ${
+                p.is_active !== false ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400' : 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400'
+              } text-[11px] font-bold transition">
+              ${p.is_active !== false ? '⏸️ Pause' : '▶️ Activate'}
+            </button>
+
+            <!-- 3. Copy Link URL -->
+            <button onclick="copyPayLinkUrl('${escapeHtml(p.slug)}')" title="Copy pay URL to clipboard"
+              class="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 text-[11px] font-bold transition">
+              📋 Copy
+            </button>
+
+            <!-- 4. Delete Pay Link -->
+            <button onclick="deletePayLink('${p.id}', '${escapeHtml(p.title)}')" title="Permanently delete link"
+              class="px-2 py-1 rounded-lg hover:text-rose-400 text-neutral-500 text-[11px] transition">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function filterPayLinksTable() {
+      const q = document.getElementById("payLinksSearchInput").value.toLowerCase();
+      const statusFilter = document.getElementById("payLinksFilterStatus").value;
+
+      const filtered = allPayLinks.filter(p => {
+        const matchesQuery = 
+          p.title.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q) ||
+          (p.merchant_name && p.merchant_name.toLowerCase().includes(q)) ||
+          (p.merchant_email && p.merchant_email.toLowerCase().includes(q)) ||
+          (p.custom_wallet && p.custom_wallet.toLowerCase().includes(q));
+
+        const matchesStatus = 
+          statusFilter === 'all' ? true :
+          statusFilter === 'active' ? (p.is_active !== false) :
+          (p.is_active === false);
+
+        return matchesQuery && matchesStatus;
+      });
+
+      renderPayLinksTable(filtered);
+    }
+
+    function populateMerchantDropdown(selectId, selectedUserId = '') {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = allUsers.map(u => `
+        <option value="${u.id}" ${u.id === selectedUserId ? 'selected' : ''}>
+          ${escapeHtml(u.name)} (${escapeHtml(u.email)}) - [${u.role.toUpperCase()}]
+        </option>
+      `).join("");
+    }
+
+    function openCreatePayLinkModal() {
+      populateMerchantDropdown("newPayLinkUser");
+      document.getElementById("createPayLinkModal").classList.remove("hidden");
+      document.getElementById("newPayLinkTitle").value = "";
+      document.getElementById("newPayLinkSlug").value = "";
+      document.getElementById("newPayLinkReceiver").value = "";
+      document.getElementById("newPayLinkDesc").value = "";
+      document.getElementById("newPayLinkType").value = "keypad";
+      document.getElementById("newPayLinkFixedAmount").value = "5.00";
+      document.getElementById("newFixedAmountWrapper").classList.add("hidden");
+      document.getElementById("newPayLinkVerified").checked = true;
+      document.getElementById("createPayLinkError").classList.add("hidden");
+      handleNewPayLinkUserChange();
+    }
+
+    function closeCreatePayLinkModal() {
+      document.getElementById("createPayLinkModal").classList.add("hidden");
+    }
+
+    function handleNewPayLinkUserChange() {
+      const selectedUserId = document.getElementById("newPayLinkUser").value;
+      const user = allUsers.find(u => u.id === selectedUserId);
+      if (user) {
+        document.getElementById("newPayLinkWallet").value = user.lightning_address || "";
+        if (!document.getElementById("newPayLinkReceiver").value) {
+          document.getElementById("newPayLinkReceiver").value = user.name || "";
+        }
+      }
+    }
+
+    function toggleNewFixedAmountInput(val) {
+      document.getElementById("newFixedAmountWrapper").classList.toggle("hidden", val !== "fixed");
+    }
+
+    function autoFillSlug(val) {
+      const slugInput = document.getElementById("newPayLinkSlug");
+      if (slugInput) {
+        slugInput.value = val.toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-');
+      }
+    }
+
+    async function handleCreatePayLinkSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById("createPayLinkSubmitBtn");
+      const errBox = document.getElementById("createPayLinkError");
+      errBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.innerText = "Creating...";
+
+      const body = {
+        user_id: document.getElementById("newPayLinkUser").value,
+        title: document.getElementById("newPayLinkTitle").value.trim(),
+        slug: document.getElementById("newPayLinkSlug").value.trim(),
+        receiver_name: document.getElementById("newPayLinkReceiver").value.trim(),
+        type: document.getElementById("newPayLinkType").value,
+        fixed_amount: document.getElementById("newPayLinkFixedAmount").value,
+        custom_wallet: document.getElementById("newPayLinkWallet").value.trim(),
+        description: document.getElementById("newPayLinkDesc").value.trim(),
+        is_verified: document.getElementById("newPayLinkVerified").checked
+      };
+
+      try {
+        const res = await fetch("/api/admin/pages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeCreatePayLinkModal();
+          showToast(`Pay link /pay/${data.page.slug} created!`);
+          await loadAdminData();
+        } else {
+          errBox.innerText = data.error || "Failed to create pay link.";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error: " + err.message;
+        errBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Create Pay Link";
+      }
+    }
+
+    function openEditPayLinkModal(pageId) {
+      const page = allPayLinks.find(p => p.id === pageId);
+      if (!page) return;
+
+      populateMerchantDropdown("editPayLinkUser", page.user_id);
+      document.getElementById("editPayLinkId").value = page.id;
+      document.getElementById("editPayLinkTitle").value = page.title || "";
+      document.getElementById("editPayLinkSlug").value = page.slug || "";
+      document.getElementById("editPayLinkReceiver").value = page.receiver_name || "";
+      document.getElementById("editPayLinkType").value = page.type || "keypad";
+      document.getElementById("editPayLinkFixedAmount").value = page.fixed_amount || "5.00";
+      document.getElementById("editFixedAmountWrapper").classList.toggle("hidden", page.type !== "fixed");
+      document.getElementById("editPayLinkWallet").value = page.custom_wallet || "";
+      document.getElementById("editPayLinkDesc").value = page.description || "";
+      document.getElementById("editPayLinkActive").value = page.is_active !== false ? "true" : "false";
+      document.getElementById("editPayLinkVerified").checked = page.is_verified !== false;
+      document.getElementById("editPayLinkError").classList.add("hidden");
+
+      document.getElementById("editPayLinkModal").classList.remove("hidden");
+    }
+
+    function closeEditPayLinkModal() {
+      document.getElementById("editPayLinkModal").classList.add("hidden");
+    }
+
+    function toggleEditFixedAmountInput(val) {
+      document.getElementById("editFixedAmountWrapper").classList.toggle("hidden", val !== "fixed");
+    }
+
+    async function handleEditPayLinkSubmit(e) {
+      e.preventDefault();
+      const pageId = document.getElementById("editPayLinkId").value;
+      const btn = document.getElementById("editPayLinkSubmitBtn");
+      const errBox = document.getElementById("editPayLinkError");
+      errBox.classList.add("hidden");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      const body = {
+        user_id: document.getElementById("editPayLinkUser").value,
+        title: document.getElementById("editPayLinkTitle").value.trim(),
+        slug: document.getElementById("editPayLinkSlug").value.trim(),
+        receiver_name: document.getElementById("editPayLinkReceiver").value.trim(),
+        type: document.getElementById("editPayLinkType").value,
+        fixed_amount: document.getElementById("editPayLinkFixedAmount").value,
+        custom_wallet: document.getElementById("editPayLinkWallet").value.trim(),
+        description: document.getElementById("editPayLinkDesc").value.trim(),
+        is_active: document.getElementById("editPayLinkActive").value === "true",
+        is_verified: document.getElementById("editPayLinkVerified").checked
+      };
+
+      try {
+        const res = await fetch(`/api/admin/pages/${pageId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeEditPayLinkModal();
+          showToast(`Pay link /pay/${data.page.slug} updated!`);
+          await loadAdminData();
+        } else {
+          errBox.innerText = data.error || "Failed to update pay link.";
+          errBox.classList.remove("hidden");
+        }
+      } catch (err) {
+        errBox.innerText = "Network error: " + err.message;
+        errBox.classList.remove("hidden");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Save Changes";
+      }
+    }
+
+    async function handleDeletePayLinkFromModal() {
+      const pageId = document.getElementById("editPayLinkId").value;
+      const title = document.getElementById("editPayLinkTitle").value;
+      if (!confirm(`Are you sure you want to delete pay link "${title}"?`)) return;
+
+      try {
+        const res = await fetch(`/api/admin/pages/${pageId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          closeEditPayLinkModal();
+          showToast("Payment page deleted");
+          await loadAdminData();
+        } else {
+          alert(json.error || "Failed to delete page");
+        }
+      } catch (e) {
+        alert("Error deleting page");
+      }
+    }
+
+    async function togglePayLinkStatus(pageId) {
+      try {
+        const res = await fetch(`/api/admin/pages/${pageId}/toggle`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(json.message);
+          await loadAdminData();
+        }
+      } catch (e) {
+        showToast("Error updating status");
+      }
+    }
+
+    async function deletePayLink(pageId, title) {
+      if (!confirm(`Are you sure you want to delete payment link "${title}"?`)) return;
+      try {
+        const res = await fetch(`/api/admin/pages/${pageId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Payment link deleted");
+          await loadAdminData();
+        } else {
+          alert(json.error || "Failed to delete pay link");
+        }
+      } catch (e) {
+        showToast("Error deleting pay link");
+      }
+    }
+
+    function copyPayLinkUrl(slug) {
+      const url = `${window.location.origin}/pay/${slug}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast("Copied: " + url);
+      }).catch(() => {
+        prompt("Copy this Pay Link:", url);
+      });
+    }
+
+    function renderVisitorsTable(visitors) {
+      const tbody = document.getElementById("visitorsTableBody");
+      if (!visitors || visitors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-neutral-500">No visitors recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = visitors.map(v => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-2.5 font-bold text-white font-sans flex items-center space-x-1.5">
+            <span>🌐</span> <span>${v.country}</span>
+          </td>
+          <td class="py-2.5 text-neutral-300">${v.ip}</td>
+          <td class="py-2.5 text-[#00D632]">/pay/${v.slug || 'root'}</td>
+          <td class="py-2.5 text-neutral-400 truncate max-w-xs text-[11px]" title="${v.user_agent}">${v.user_agent}</td>
+          <td class="py-2.5 text-right text-neutral-400 text-[11px]">${new Date(v.timestamp).toLocaleTimeString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderGlobalPayments(payments) {
+      const tbody = document.getElementById("globalPaymentsBody");
+      if (!payments || payments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-neutral-500 font-sans">No payments processed yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = payments.map(p => `
+        <tr class="hover:bg-neutral-800/40 transition">
+          <td class="py-2.5 font-bold text-neutral-300">${p.id}</td>
+          <td class="py-2.5 font-sans text-white">${p.merchant_name}</td>
+          <td class="py-2.5 font-bold text-white">$${parseFloat(p.amount_usd).toFixed(2)}</td>
+          <td class="py-2.5 text-amber-400">${(p.amount_sats || 0).toLocaleString()}</td>
+          <td class="py-2.5 font-sans">
+            ${p.routing_target === 'OWNER' ? `
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                👑 OWNER (3rd Cut)
+              </span>
+            ` : `
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-800 text-neutral-300">
+                👤 Merchant
+              </span>
+            `}
+          </td>
+          <td class="py-2.5 text-[10px] text-neutral-400 truncate max-w-[140px]" title="${p.destination_wallet}">
+            ${p.destination_wallet}
+          </td>
+          <td class="py-2.5 font-sans">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              p.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+            }">${p.status}</span>
+          </td>
+          <td class="py-2.5 text-right text-neutral-400 text-[11px]">${new Date(p.created_at).toLocaleTimeString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderSettings(s) {
+      document.getElementById("ownerLightningInput").value = s.owner_lightning_address || "";
+      document.getElementById("feeIntervalInput").value = s.fee_cycle_interval || 3;
+      document.getElementById("telegramTokenInput").value = s.telegram_bot_token || "";
+      document.getElementById("telegramChatIdInput").value = s.telegram_chat_id || "";
+
+      document.getElementById("quickOwnerWallet").innerText = s.owner_lightning_address || "None configured";
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const body = {
+        owner_lightning_address: document.getElementById("ownerLightningInput").value,
+        fee_cycle_interval: document.getElementById("feeIntervalInput").value,
+        telegram_bot_token: document.getElementById("telegramTokenInput").value,
+        telegram_chat_id: document.getElementById("telegramChatIdInput").value
+      };
+
+      try {
+        const res = await fetch("/api/admin/settings", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Settings saved successfully!");
+          await loadAdminData();
+        }
+      } catch (e) {
+        showToast("Failed to save settings");
+      }
+    }
+
+    async function handleSaveAdminProfile(e) {
+      e.preventDefault();
+      const btn = document.getElementById("saveAdminProfileBtn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      const body = {
+        name: document.getElementById("adminProfileName").value,
+        email: document.getElementById("adminProfileEmail").value,
+        dob: document.getElementById("adminProfileDob").value
+      };
+
+      const pass = document.getElementById("adminProfilePassword").value;
+      if (pass) body.password = pass;
+
+      try {
+        const res = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (json.success) {
+          document.getElementById("staffName").innerText = json.user.name;
+          document.getElementById("adminProfilePassword").value = "";
+          showToast("Admin profile settings updated! ✓");
+        } else {
+          showToast(json.error || "Failed to update admin profile");
+        }
+      } catch (err) {
+        showToast("Error saving admin profile");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Save Admin Profile";
+      }
+    }
+
+    async function testTelegramAlert() {
+      try {
+        const res = await fetch("/api/admin/test-telegram", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` }
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast("Test Telegram alert sent!");
+        } else {
+          showToast(json.error || "Telegram alert failed");
+        }
+      } catch (e) {
+        showToast("Error sending Telegram test");
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      const activeNav = document.getElementById(`nav-${tabId}`);
+
+      if (activeTab) activeTab.classList.remove("hidden");
+      if (activeNav) activeNav.classList.add("active");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("cashapp_auth_token");
+      window.location.href = "/";
+    }
+
+    initAdmin();
+  </script>
+</body>
+
+</html>
+
